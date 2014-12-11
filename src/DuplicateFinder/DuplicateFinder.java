@@ -84,10 +84,9 @@ public class DuplicateFinder {
                     });
                     List<File[]> groups = new ArrayList<>();
                     for (List<File> filesByExt : hmGroupedByExt.values()) {
-                        if (filesByExt.size() < 2) {
-                            continue;
+                        if (filesByExt.size() > 1) {
+                            groups.addAll(new FileSizeGroup(filesByExt).getGroups());
                         }
-                        groups.addAll(new FileSizeGroup(filesByExt).getGroups());
                     }
                     this.dupsGroups.put(eOneSize.getKey(), groups);
                 } else {
