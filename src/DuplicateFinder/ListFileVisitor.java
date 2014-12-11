@@ -5,7 +5,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import static java.nio.file.FileVisitResult.CONTINUE;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -26,8 +25,6 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attr) {
-        //System.out.println("dir: " + path.toFile().getCanonicalFile()/*.LinkOption.NOFOLLOW_LINKS)*/);
-        //System.out.println("dir: " + path.toAbsolutePath().toString());
         File file = path.toFile();
         String n = file.getName();
         for (Pattern p : this.skipDir) {
@@ -50,10 +47,8 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
-        //System.out.println("file: " + path.toRealPath(LinkOption.NOFOLLOW_LINKS));
-        //System.out.println("file: " + path.toAbsolutePath().toString());
         File file = path.toFile();
-        if (this.fnf.accept(null, file.getName())) {
+        if (file.length() > 0 && this.fnf.accept(null, file.getName())) {
             this.files.add(file);
         }
         return CONTINUE;

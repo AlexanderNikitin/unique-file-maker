@@ -4,20 +4,27 @@ import CmdOptions.GetOpt;
 import CmdOptions.Option;
 import FileDeleter.CheckedFile;
 import FileDeleter.DuplicateDeleteSoluter;
-import FileDeleter.DuplicateDeleteSoluter.Param;
+import static FileDeleter.DuplicateDeleteSoluter.Param.DIRECTORY_DEPTH;
+import static FileDeleter.DuplicateDeleteSoluter.Param.FILENAME_LENGTH;
+import static FileDeleter.DuplicateDeleteSoluter.Param.IS_COPY;
+import static FileDeleter.DuplicateDeleteSoluter.Param.IS_ENGLISH_FILE_NAME;
+import static FileDeleter.DuplicateDeleteSoluter.Param.PATH_LENGTH;
 import FileDeleter.DuplicateDeleteSoluter.Rule;
+import FileDeleter.FileDeleter;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import static java.lang.Integer.MAX_VALUE;
 import static java.lang.System.currentTimeMillis;
 import static java.lang.System.err;
 import static java.lang.System.out;
 import java.nio.file.FileSystemException;
 import java.nio.file.FileVisitOption;
+import static java.nio.file.FileVisitOption.FOLLOW_LINKS;
 import static java.nio.file.Files.walkFileTree;
-import java.nio.file.LinkOption;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import static java.security.MessageDigest.getInstance;
@@ -35,23 +42,20 @@ public class DuplicateFinder {
     public final Map<Long, List<File[]>> dupsGroups = new HashMap<>();
 
     private Map<Long, List<File>> group(List<File> files) {
-        out.println("Grouping");
-        long t = currentTimeMillis();
+        out.println("Grouping...");
         Map<Long, List<File>> hmSizeGrouping = new HashMap<>();
         for (File f : files) {
             long size = f.length();
-            if (size == 0) {
-                continue;
+            if (size > 0) {
+                List<File> lEqualSize;
+                if (hmSizeGrouping.containsKey(size)) {
+                    lEqualSize = hmSizeGrouping.get(size);
+                } else {
+                    hmSizeGrouping.put(size, lEqualSize = new ArrayList<>());
+                }
+                lEqualSize.add(f);
             }
-            List<File> lEqualSize;
-            if (hmSizeGrouping.containsKey(size)) {
-                lEqualSize = hmSizeGrouping.get(size);
-            } else {
-                hmSizeGrouping.put(size, lEqualSize = new ArrayList<>());
-            }
-            lEqualSize.add(f);
         }
-        out.println("Grouping time: " + (currentTimeMillis() - t));
         return hmSizeGrouping;
     }
 
@@ -65,31 +69,30 @@ public class DuplicateFinder {
         long t = currentTimeMillis();
         for (Map.Entry<Long, List<File>> eOneSize : hmSizeGrouping.entrySet()) {
             List<File> lOneSize = eOneSize.getValue();
-            if (lOneSize.size() < 2) {
-                continue;
-            }
-            if (diffByExt) {
-                Map<String, List<File>> hmGroupedByExt = new HashMap<>();
-                lOneSize.stream().forEach(file -> {
-                    String ext = getFileExtensionByName(file.getName());
-                    List<File> filesByExt;
-                    if (hmGroupedByExt.containsKey(ext)) {
-                        filesByExt = hmGroupedByExt.get(ext);
-                    } else {
-                        hmGroupedByExt.put(ext, filesByExt = new ArrayList<>());
+            if (lOneSize.size() > 1) {
+                if (diffByExt) {
+                    Map<String, List<File>> hmGroupedByExt = new HashMap<>();
+                    lOneSize.stream().forEach(file -> {
+                        String ext = getFileExtensionByName(file.getName());
+                        List<File> filesByExt;
+                        if (hmGroupedByExt.containsKey(ext)) {
+                            filesByExt = hmGroupedByExt.get(ext);
+                        } else {
+                            hmGroupedByExt.put(ext, filesByExt = new ArrayList<>());
+                        }
+                        filesByExt.add(file);
+                    });
+                    List<File[]> groups = new ArrayList<>();
+                    for (List<File> filesByExt : hmGroupedByExt.values()) {
+                        if (filesByExt.size() < 2) {
+                            continue;
+                        }
+                        groups.addAll(new FileSizeGroup(filesByExt).getGroups());
                     }
-                    filesByExt.add(file);
-                });
-                List<File[]> groups = new ArrayList<>();
-                for (List<File> filesByExt : hmGroupedByExt.values()) {
-                    if (filesByExt.size() < 2) {
-                        continue;
-                    }
-                    groups.addAll(new FileSizeGroup(filesByExt).getGroups());
+                    this.dupsGroups.put(eOneSize.getKey(), groups);
+                } else {
+                    this.dupsGroups.put(eOneSize.getKey(), new FileSizeGroup(lOneSize).getGroups());
                 }
-                this.dupsGroups.put(eOneSize.getKey(), groups);
-            } else {
-                this.dupsGroups.put(eOneSize.getKey(), new FileSizeGroup(lOneSize).getGroups());
             }
         }
         out.println("Compare time: " + (currentTimeMillis() - t));
@@ -141,15 +144,14 @@ public class DuplicateFinder {
             long groupSize = arFileOneSize.getKey();
             for (File[] dups : dupGruops) {
                 long n = dups.length;
-                if (n < 2) {
-                    continue;
+                if (n > 1) {
+                    long delta = groupSize * n;
+                    assert ((MAX_VALUE - delta) > allSize);
+                    allSize += delta;
                 }
-                long delta = groupSize * n;
-                assert ((Long.MAX_VALUE - delta) > allSize);
-                allSize += delta;
             }
         }
-        System.out.println("All size: " + allSize);
+        out.println("All size: " + allSize);
 
         //long t = System.currentTimeMillis();
         long curSize = 0;
@@ -161,43 +163,41 @@ public class DuplicateFinder {
                 continue;
             }
             long groupSize = arFileOneSize.getKey();
-
             for (File[] dups : dupGruops) {
                 int n = dups.length;
-                if (n < 2) {
-                    continue;
-                }
-                byte[][] d = new byte[n][];
-                for (int i = 0; i < n; i++) {
-                    File dup = dups[i];
-                    try (DigestInputStream dis = new DigestInputStream(new BufferedInputStream(new FileInputStream(dup.getPath())), md)) {
-                        while (dis.read() != -1);
-                    } catch (Exception e) {
-                        err.println(e.getMessage());
+                if (n > 1) {
+                    byte[][] d = new byte[n][];
+                    for (int i = 0; i < n; i++) {
+                        File dup = dups[i];
+                        try (DigestInputStream dis = new DigestInputStream(new BufferedInputStream(new FileInputStream(dup.getPath())), md)) {
+                            while (dis.read() != -1);
+                        } catch (Exception e) {
+                            err.println(e.getMessage());
+                        }
+                        d[i] = md.digest();
                     }
-                    d[i] = md.digest();
-                }
-                boolean bErr = false;
-                for (int i = 1; i < d.length; i++) {
-                    if (!Arrays.equals(d[0], d[i])) {
-                        out.println(dups[i].toString());
-                        bErr = true;
+                    boolean bErr = false;
+                    for (int i = 1; i < d.length; i++) {
+                        if (!Arrays.equals(d[0], d[i])) {
+                            out.println(dups[i].toString());
+                            bErr = true;
+                        }
                     }
-                }
-                if (bErr) {
-                    out.println("Default: " + dups[0].toString());
-                    out.println();
-                    errGrCnt++;
-                }
+                    if (bErr) {
+                        out.println("Default: " + dups[0].toString());
+                        out.println();
+                        errGrCnt++;
+                    }
 
-                long delta = n * groupSize;
-                assert ((Long.MAX_VALUE - delta) > curSize);
-                curSize += delta;
+                    long delta = n * groupSize;
+                    assert ((MAX_VALUE - delta) > curSize);
+                    curSize += delta;
 
-                long percent = curSize * 100 / allSize;
-                if (percent > oldPercent) {
-                    out.println(percent + "%");
-                    oldPercent = percent;
+                    long percent = curSize * 100 / allSize;
+                    if (percent > oldPercent) {
+                        out.println(percent + "%");
+                        oldPercent = percent;
+                    }
                 }
             }
             /*long curT = System.currentTimeMillis();
@@ -253,15 +253,15 @@ public class DuplicateFinder {
                     + "\tIf this option missing program will not delete files\n"
                     + "--help, -h\n"
                     + "\tIf you read this annotatin, you know it:)\n";
-            System.out.println(help);
+            out.println(help);
             return;
         }
 
         for (Option opt : opts.values()) {
-            System.out.println(opt.name);
+            out.println(opt.name);
             if (opt.hasArguments) {
                 for (String s : opt.getArguments()) {
-                    System.out.println("\t" + s);
+                    out.println("\t" + s);
                 }
             }
         }
@@ -298,20 +298,20 @@ public class DuplicateFinder {
         if (bRecursive) {
             ListFileVisitor lfv = new ListFileVisitor(fnf);
             Set<FileVisitOption> so = new HashSet<>();
-            so.add(FileVisitOption.FOLLOW_LINKS);
+            so.add(FOLLOW_LINKS);
             for (String startDir : aStartDirs) {
-                System.out.println(startDir);
+                out.println(startDir);
                 try {
-                    walkFileTree(new File(startDir).toPath().toRealPath(LinkOption.NOFOLLOW_LINKS), so, Integer.MAX_VALUE, lfv);
+                    walkFileTree(new File(startDir).toPath().toRealPath(NOFOLLOW_LINKS), so, MAX_VALUE, lfv);
                 } catch (FileSystemException e) {
-                    System.out.println("FileSystemException: " + e.getFile());
+                    out.println("FileSystemException: " + e.getFile());
                 }
             }
             files = lfv.files;
         } else {
             files = new ArrayList<>();
             for (String startDir : aStartDirs) {
-                System.out.println(startDir);
+                out.println(startDir);
                 File[] foundFiles = new File(startDir).listFiles(fnf);
                 for (File file : foundFiles) {
                     if (file.isFile()) {
@@ -321,18 +321,18 @@ public class DuplicateFinder {
             }
         }
 
-        System.out.println("All found files: " + files.size());
+        out.println("All found files: " + files.size());
         DuplicateFinder duplicateFinder = new DuplicateFinder(files, bDiffByExt);
         //duplicateFinder.print();
 
         if ((bNeedCheck && duplicateFinder.check()) || !bNeedCheck) {
             List<Rule> lRules = new ArrayList<>();
 
-            lRules.add(new Rule(Param.IS_ENGLISH_FILE_NAME, false));
-            lRules.add(new Rule(Param.IS_COPY, false));
-            lRules.add(new Rule(Param.DIRECTORY_DEPTH, true));
-            lRules.add(new Rule(Param.FILENAME_LENGTH, true));
-            lRules.add(new Rule(Param.PATH_LENGTH, true));
+            lRules.add(new Rule(IS_ENGLISH_FILE_NAME, false));
+            lRules.add(new Rule(IS_COPY, false));
+            lRules.add(new Rule(DIRECTORY_DEPTH, true));
+            lRules.add(new Rule(FILENAME_LENGTH, true));
+            lRules.add(new Rule(PATH_LENGTH, true));
 
             DuplicateDeleteSoluter dds = new DuplicateDeleteSoluter(lRules, bSaveOnlyOne);
 
@@ -344,14 +344,16 @@ public class DuplicateFinder {
             });
             for (CheckedFile[] group : deletePreparation) {
                 for (CheckedFile cf : group) {
-                    System.out.println((cf.del ? "[x] " : "[ ] ") + cf.file.getAbsolutePath());
+                    out.println((cf.del ? "[x] " : "[ ] ") + cf.file.getAbsolutePath());
                 }
-                System.out.println(str_repeat("-", 100));
+                out.println(str_repeat("-", 100));
             }
             if (bDel) {
+                FileDeleter fd = new FileDeleter();
                 for (CheckedFile[] group : deletePreparation) {
-                    FileDeleter.FileDeleter.delDups(group);
+                    fd.delDups(group);
                 }
+                out.println("Deleted: " + fd.cnt());
             }
         }
     }
