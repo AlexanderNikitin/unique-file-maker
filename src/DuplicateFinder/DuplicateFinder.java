@@ -14,11 +14,11 @@ import FileDeleter.FileDeleter;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.System.currentTimeMillis;
-import static java.lang.System.err;
 import static java.lang.System.out;
 import java.nio.file.FileSystemException;
 import java.nio.file.FileVisitOption;
@@ -170,8 +170,10 @@ public class DuplicateFinder {
                         File dup = dups[i];
                         try (DigestInputStream dis = new DigestInputStream(new BufferedInputStream(new FileInputStream(dup.getPath())), md)) {
                             while (dis.read() != -1);
-                        } catch (Exception e) {
-                            err.println(e.getMessage());
+                        } catch (FileNotFoundException e) {
+                            System.err.println(e.getMessage());
+                        } catch (IOException e) {
+                            System.err.println(e.getMessage());
                         }
                         d[i] = md.digest();
                     }

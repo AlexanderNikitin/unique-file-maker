@@ -1,7 +1,6 @@
 package FileDeleter;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.regex.Pattern;
