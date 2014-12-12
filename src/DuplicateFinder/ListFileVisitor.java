@@ -40,7 +40,7 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
                 this.setVisitedDirs.add(canonical);
             }
         } catch (IOException ex) {
-            Logger.getLogger(ListFileVisitor.class.getName()).log(Level.SEVERE, null, ex);
+            System.err.println(ex.getMessage());
         }
         return FileVisitResult.CONTINUE;
     }
@@ -56,16 +56,26 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
 
     @Override
     public FileVisitResult visitFileFailed(Path dir, IOException exc) {
-        //System.out.println("err: " + dir.toAbsolutePath().toString());
         return CONTINUE;
     }
 
-    public ListFileVisitor(FilenameFilter fnf) {
+    public ListFileVisitor(FilenameFilter fnf, List<String> lsExclide) {
         this.fnf = fnf;
         this.setVisitedDirs = new HashSet<>();
 
         this.skipDir = new ArrayList<>();
-        this.skipDir.add(Pattern.compile("^backup_\\d+$"));
-        this.skipDir.add(Pattern.compile("_files$"));
+        int flags = Pattern.CASE_INSENSITIVE;
+        this.skipDir.add(Pattern.compile("^backup_\\d+$", flags));
+        this.skipDir.add(Pattern.compile("_files$", flags));
+
+        if (lsExclide != null) {
+            for (String s : lsExclide) {
+                try {
+                    this.skipDir.add(Pattern.compile(s, flags));
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
     }
 }

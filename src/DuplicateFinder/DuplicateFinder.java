@@ -229,7 +229,7 @@ public class DuplicateFinder {
         lOptions.add(new Option("check", 'c', false));
         lOptions.add(new Option("delete", 'd', false));
         lOptions.add(new Option("help", 'h', false));
-        //lOptions.add(new Option("exclude", 'x', true));
+        lOptions.add(new Option("exclude", 'x', true));
 
         Map<String, Option> opts = new GetOpt(lOptions).mapOptions(args);
 
@@ -250,6 +250,8 @@ public class DuplicateFinder {
                     + "\tCheck duplicated equality by MD5 algorithm\n"
                     + "--delete, -d\n"
                     + "\tIf this option missing program will not delete files\n"
+                    + "--exclude, -x"
+                    + "\tRegular expression to exclude directories to scan"
                     + "--help, -h\n"
                     + "\tIf you read this annotatin, you know it:)\n";
             out.println(help);
@@ -293,9 +295,16 @@ public class DuplicateFinder {
         //need check
         boolean bDel = opts.containsKey("delete");
 
+        //exclude
+        List<String> lsExclide = null;
+        Option optExclude = opts.get("exclude");
+        if (optExclude != null) {
+            lsExclide = optExclude.getArguments();
+        }
+
         List<File> files;
         if (bRecursive) {
-            ListFileVisitor lfv = new ListFileVisitor(fnf);
+            ListFileVisitor lfv = new ListFileVisitor(fnf, lsExclide);
             Set<FileVisitOption> so = new HashSet<>();
             so.add(FOLLOW_LINKS);
             for (String startDir : aStartDirs) {
