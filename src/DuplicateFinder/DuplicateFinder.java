@@ -252,8 +252,8 @@ public class DuplicateFinder {
                     + "\tCheck duplicated equality by MD5 algorithm\n"
                     + "--delete, -d\n"
                     + "\tIf this option missing program will not delete files\n"
-                    + "--exclude, -x"
-                    + "\tRegular expression to exclude directories to scan"
+                    + "--exclude, -x\n"
+                    + "\tRegular expression to exclude directories to scan\n"
                     + "--help, -h\n"
                     + "\tIf you read this annotatin, you know it:)\n";
             out.println(help);
