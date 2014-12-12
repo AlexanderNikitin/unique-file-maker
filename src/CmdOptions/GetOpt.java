@@ -1,7 +1,6 @@
 package CmdOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +20,6 @@ public class GetOpt {
             this.indexByShortName.put(opt.shortName, opt);
             this.indexByName.put(opt.name, opt);
         }
-    }
-
-    private Option parseArg(String arg) {
-        return null;
     }
 
     public Map<String, Option> mapOptions(String[] args) throws Exception {
