@@ -238,9 +238,9 @@ public class DuplicateFinder {
         boolean bHelp = opts.containsKey("help");
         if (bHelp) {
             String help = ""
-                    + "--ext, -e <extension[|extension2]>\n"
+                    + "--ext, -e <extension[ extension2]>\n"
                     + "\tFile extension(s) to find\n"
-                    + "--path, -p <directory[|directory2]>\n"
+                    + "--path, -p <directory[ directory2]>\n"
                     + "\tDirectories where find files\n"
                     + "--recursive, -r\n"
                     + "\tFind files in subdirectories\n"
