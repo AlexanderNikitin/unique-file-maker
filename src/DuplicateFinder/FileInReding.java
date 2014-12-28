@@ -4,7 +4,6 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import static java.nio.ByteBuffer.allocate;
 
 public class FileInReding implements Closeable {
 
@@ -29,7 +28,7 @@ public class FileInReding implements Closeable {
     public FileInReding(File file) throws IOException {
         this.file = file;
         this.lfis = new LockFileInputStream(file);
-        this.bb = allocate((int) Math.min(BUFFER_SIZE, this.file.length()));
+        this.bb = ByteBuffer.allocate((int) Math.min(BUFFER_SIZE, this.file.length()));
     }
 
     public boolean read() throws IOException {

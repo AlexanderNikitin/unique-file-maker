@@ -67,10 +67,14 @@ public class GetOpt {
                     }
                 }
                 if (Character.isLetter(c)) {
-                    if (!bIsLongOptionName && !bThisIsArgument) {
+                    if (bThisIsArgument) {
+                        if (lastOption == null) {
+                            throw new Exception("Option must be first!");
+                        }
+                    } else if (!bIsLongOptionName) {
                         Option option = this.indexByShortName.get(c);
                         if (option == null) {
-                            throw new Exception("Unknow option! Option: " + c + " Element: " + element);
+                            throw new Exception("Unknow option! Option: " + c + " Element number: " + element + " Element: " + arg);
                         }
                         result.add(lastOption = option);
                     }

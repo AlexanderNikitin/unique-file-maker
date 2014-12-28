@@ -1,7 +1,6 @@
 package DuplicateFinder;
 
-import static com.sun.nio.file.ExtendedOpenOption.NOSHARE_DELETE;
-import static com.sun.nio.file.ExtendedOpenOption.NOSHARE_WRITE;
+//import com.sun.nio.file.ExtendedOpenOption;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class LockFileInputStream implements Closeable {
     }
 
     public LockFileInputStream(Path path) throws IOException {
-        //this.fc = open(path, READ, NOSHARE_DELETE, NOSHARE_WRITE);
+        //this.fc = open(path, READ, ExtendedOpenOption.NOSHARE_DELETE, ExtendedOpenOption.NOSHARE_WRITE);
         this.fc = open(path, READ);
     }
 

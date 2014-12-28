@@ -2,8 +2,6 @@ package DuplicateFinder;
 
 import java.io.File;
 import java.io.IOException;
-import static java.lang.System.err;
-import static java.lang.System.out;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -21,7 +19,7 @@ public class FileSizeGroup {
                     if (file.length() == size) {
                         filtered.add(file);
                     } else {
-                        out.println("Different size: " + file.toString());
+                        System.out.println("Different size: " + file.toString());
                     }
                 } else {
                     size = file.length();
@@ -31,8 +29,8 @@ public class FileSizeGroup {
             try {
                 this.stack.push(FileInRedingGroup.initFromFiles(filtered));
             } catch (Exception e) {
-                err.println(e.toString());
-                err.println(e.getMessage());
+                System.err.println(e.toString());
+                System.err.println(e.getMessage());
             }
         }
     }

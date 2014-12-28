@@ -3,8 +3,6 @@ package DuplicateFinder;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import static java.lang.System.err;
-import static java.lang.System.out;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,19 +27,19 @@ public final class FileInRedingGroup implements Closeable {
                     base = fr.file().toString();
                 } else {
                     if (size != curSize) {
-                        out.println("Size changed to: " + fr.file().toString());
+                        System.out.println("Size changed to: " + fr.file().toString());
                         bChanged = true;
                         continue;
                     }
                 }
                 alReading.add(fr);
             } catch (IOException e) {
-                err.println(e.toString());
-                err.println(e.getMessage());
+                System.err.println(e.toString());
+                System.err.println(e.getMessage());
             }
         }
         if (bChanged) {
-            out.println("Base file: " + base + " : " + size);
+            System.out.println("Base file: " + base + " : " + size);
         }
         if (alReading.isEmpty()) {
             throw new Exception("Empty reading group!");

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
-import static java.nio.file.FileVisitResult.CONTINUE;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -49,12 +48,12 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
         if (file.length() > 0 && this.fnf.accept(null, file.getName())) {
             this.files.add(file);
         }
-        return CONTINUE;
+        return FileVisitResult.CONTINUE;
     }
 
     @Override
     public FileVisitResult visitFileFailed(Path dir, IOException exc) {
-        return CONTINUE;
+        return FileVisitResult.CONTINUE;
     }
 
     public ListFileVisitor(FilenameFilter fnf, List<String> lsExclide) {
