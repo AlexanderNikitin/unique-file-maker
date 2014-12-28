@@ -224,14 +224,14 @@ public class DuplicateFinder {
 
     public static void main(String[] args) throws Exception {
         List<Option> lOptions = new ArrayList<>();
-        lOptions.add(new Option("ext", 'e', true));
-        lOptions.add(new Option("path", 'p', true));
-        lOptions.add(new Option("recursive", 'r', false));
-        lOptions.add(new Option("groupbyext", 'g', false));
-        lOptions.add(new Option("saveonlyone", 'o', false));
-        lOptions.add(new Option("check", 'c', false));
-        lOptions.add(new Option("delete", 'd', false));
-        lOptions.add(new Option("help", 'h', false));
+        lOptions.add(new Option("ext", true));
+        lOptions.add(new Option("path", true));
+        lOptions.add(new Option("recursive"));
+        lOptions.add(new Option("groupbyext"));
+        lOptions.add(new Option("saveonlyone", 'o'));
+        lOptions.add(new Option("check"));
+        lOptions.add(new Option("delete"));
+        lOptions.add(new Option("help"));
         lOptions.add(new Option("exclude", 'x', true));
 
         Map<String, Option> opts = new GetOpt(lOptions).mapOptions(args);
