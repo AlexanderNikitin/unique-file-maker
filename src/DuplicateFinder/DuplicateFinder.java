@@ -6,7 +6,6 @@ import FileDeleter.CheckedFile;
 import FileDeleter.DuplicateDeleteSoluter;
 import FileDeleter.Rule;
 import FileDeleter.FileDeleter;
-import FileDeleter.Param;
 import static FileDeleter.Param.DIRECTORY_DEPTH;
 import static FileDeleter.Param.FILENAME_LENGTH;
 import static FileDeleter.Param.IS_COPY;
