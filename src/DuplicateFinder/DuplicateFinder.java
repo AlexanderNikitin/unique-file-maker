@@ -4,13 +4,14 @@ import CmdOptions.GetOpt;
 import CmdOptions.Option;
 import FileDeleter.CheckedFile;
 import FileDeleter.DuplicateDeleteSoluter;
-import static FileDeleter.DuplicateDeleteSoluter.Param.DIRECTORY_DEPTH;
-import static FileDeleter.DuplicateDeleteSoluter.Param.FILENAME_LENGTH;
-import static FileDeleter.DuplicateDeleteSoluter.Param.IS_COPY;
-import static FileDeleter.DuplicateDeleteSoluter.Param.IS_ENGLISH_FILE_NAME;
-import static FileDeleter.DuplicateDeleteSoluter.Param.PATH_LENGTH;
-import FileDeleter.DuplicateDeleteSoluter.Rule;
+import FileDeleter.Rule;
 import FileDeleter.FileDeleter;
+import FileDeleter.Param;
+import static FileDeleter.Param.DIRECTORY_DEPTH;
+import static FileDeleter.Param.FILENAME_LENGTH;
+import static FileDeleter.Param.IS_COPY;
+import static FileDeleter.Param.IS_ENGLISH_FILE_NAME;
+import static FileDeleter.Param.PATH_LENGTH;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,6 +20,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.System.currentTimeMillis;
+import static java.lang.System.err;
 import static java.lang.System.out;
 import java.nio.file.FileSystemException;
 import java.nio.file.FileVisitOption;
@@ -171,9 +173,9 @@ public class DuplicateFinder {
                         try (DigestInputStream dis = new DigestInputStream(new BufferedInputStream(new FileInputStream(dup.getPath())), md)) {
                             while (dis.read() != -1);
                         } catch (FileNotFoundException e) {
-                            System.err.println(e.getMessage());
+                            err.println(e.getMessage());
                         } catch (IOException e) {
-                            System.err.println(e.getMessage());
+                            err.println(e.getMessage());
                         }
                         d[i] = md.digest();
                     }

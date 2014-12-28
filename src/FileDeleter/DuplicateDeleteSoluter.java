@@ -6,26 +6,6 @@ import java.util.List;
 
 public class DuplicateDeleteSoluter {
 
-    public static enum Param {
-
-        DIRECTORY_DEPTH,
-        FILENAME_LENGTH,
-        PATH_LENGTH,
-        IS_COPY,
-        IS_ENGLISH_FILE_NAME
-    }
-
-    public static class Rule {
-
-        public final Param param;
-        public final boolean saveByMax;
-
-        public Rule(Param param, boolean saveByMax) {
-            this.param = param;
-            this.saveByMax = saveByMax;
-        }
-    }
-
     private final boolean bSaveOnlyOne;
     private final List<Rule> rules = new ArrayList<>();
 
@@ -39,16 +19,6 @@ public class DuplicateDeleteSoluter {
             result[i] = new CheckedFile(dups[i]);
         }
         for (Rule rule : this.rules) {
-            int saveCnt = 0;
-            for (CheckedFile cf : result) {
-                if (!cf.del) {
-                    saveCnt++;
-                }
-            }
-            assert saveCnt > 0;
-            if (saveCnt < 2) {
-                break;
-            }
             Param param = rule.param;
             boolean saveByMax = rule.saveByMax;
             int valueMax = Integer.MIN_VALUE;
@@ -67,10 +37,25 @@ public class DuplicateDeleteSoluter {
             }
             if (valueMax > valueMin) {
                 int saveValue = saveByMax ? valueMax : valueMin;
+                int delCnt = 0;
+                boolean bEnd = false;
                 for (CheckedFile cf : result) {
-                    if (!cf.del && (cf.params.get(param) != saveValue)) {
-                        cf.del = true;
+                    if (cf.del) {
+                        delCnt++;
+                        continue;
                     }
+                    if (cf.params.get(param) != saveValue) {
+                        if (result.length - delCnt > 1) {
+                            cf.del = true;
+                            delCnt++;
+                        } else {
+                            bEnd = true;
+                            break;
+                        }
+                    }
+                }
+                if (bEnd) {
+                    break;
                 }
             }
         }
@@ -82,10 +67,12 @@ public class DuplicateDeleteSoluter {
                 }
                 if (bSaved) {
                     cf.del = true;
+                } else {
+                    bSaved = true;
                 }
-                bSaved = true;
             }
         }
+        //additional final control
         boolean atLeastOneSave = false;
         for (CheckedFile cf : result) {
             if (!cf.del) {
@@ -93,7 +80,9 @@ public class DuplicateDeleteSoluter {
                 break;
             }
         }
-        assert atLeastOneSave;
+        if (!atLeastOneSave) {
+            result[0].del = false;
+        }
         return result;
     }
 

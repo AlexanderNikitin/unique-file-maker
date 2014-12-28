@@ -16,7 +16,7 @@ public class CheckedFile {
     public final int IS_COPY;
     public final int IS_ENGLISH_FILE_NAME;
 
-    public final Map<DuplicateDeleteSoluter.Param, Integer> params;
+    public final Map<Param, Integer> params;
 
     public CheckedFile(File file) {
         this.file = file;
@@ -47,7 +47,7 @@ public class CheckedFile {
         this.FILENAME_LENGTH = sFileName.length();
         this.PATH_LENGTH = sAbsPath.length();
 
-        this.params = new EnumMap<>(DuplicateDeleteSoluter.Param.class);
+        this.params = new EnumMap<>(Param.class);
 
         /*DuplicateDeleteSoluter.Param[] ps = DuplicateDeleteSoluter.Param.values();
          for (DuplicateDeleteSoluter.Param p : ps) {
@@ -57,10 +57,10 @@ public class CheckedFile {
          Logger.getLogger(CheckedFile.class.getName()).log(Level.SEVERE, null, ex);
          }
          }*/
-        this.params.put(DuplicateDeleteSoluter.Param.IS_ENGLISH_FILE_NAME, this.IS_ENGLISH_FILE_NAME);
-        this.params.put(DuplicateDeleteSoluter.Param.IS_COPY, this.IS_COPY);
-        this.params.put(DuplicateDeleteSoluter.Param.DIRECTORY_DEPTH, this.DIRECTORY_DEPTH);
-        this.params.put(DuplicateDeleteSoluter.Param.FILENAME_LENGTH, this.FILENAME_LENGTH);
-        this.params.put(DuplicateDeleteSoluter.Param.PATH_LENGTH, this.PATH_LENGTH);
+        this.params.put(Param.IS_ENGLISH_FILE_NAME, this.IS_ENGLISH_FILE_NAME);
+        this.params.put(Param.IS_COPY, this.IS_COPY);
+        this.params.put(Param.DIRECTORY_DEPTH, this.DIRECTORY_DEPTH);
+        this.params.put(Param.FILENAME_LENGTH, this.FILENAME_LENGTH);
+        this.params.put(Param.PATH_LENGTH, this.PATH_LENGTH);
     }
 }
