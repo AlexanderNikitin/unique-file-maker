@@ -1,4 +1,4 @@
-package CmdOptions;
+package CommandLineArguments;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,5 +53,9 @@ public class Option {
         } else {
             throw new Exception("This option hasn't arguments! Can't set!");
         }
+    }
+
+    public boolean needAddArgument() {
+        return this.hasArguments && this.args.isEmpty();
     }
 }

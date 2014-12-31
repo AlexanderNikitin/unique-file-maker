@@ -1,7 +1,6 @@
 package DuplicateFinder;
 
-import CmdOptions.GetOpt;
-import CmdOptions.Option;
+import CommandLineArguments.*;
 import FileDeleter.CheckedFile;
 import FileDeleter.DuplicateDeleteSoluter;
 import FileDeleter.Rule;
@@ -224,7 +223,7 @@ public class DuplicateFinder {
         lOptions.add(new Option("help"));
         lOptions.add(new Option("exclude", 'x', true));
 
-        Map<String, Option> opts = new GetOpt(lOptions).mapOptions(args);
+        Map<String, Option> opts = new CommandLineArgumentParser(lOptions, true).parse(args).mapOptions();
 
         boolean bHelp = opts.containsKey("help");
         if (bHelp) {
