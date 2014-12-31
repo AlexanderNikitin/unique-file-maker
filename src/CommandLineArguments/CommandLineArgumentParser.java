@@ -7,15 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 public class CommandLineArgumentParser {
-    
+
     private final Map<Character, Option> indexByShortName;
     private final Map<String, Option> indexByName;
     private final boolean bEscape;
-    
+
     public CommandLineArgumentParser(List<Option> options) throws Exception {
         this(options, false);
     }
-    
+
     public CommandLineArgumentParser(List<Option> options, boolean bEscape) throws Exception {
         this.indexByShortName = new LinkedHashMap<>();
         this.indexByName = new LinkedHashMap<>();
@@ -28,7 +28,7 @@ public class CommandLineArgumentParser {
         }
         this.bEscape = bEscape;
     }
-    
+
     public CommandLineArgumentParseResult parse(String[] args) throws Exception {
         if (args == null) {
             throw new Exception("Argument is NULL!");

@@ -1,4 +1,4 @@
-package DuplicateFinder;
+package FileSearcher;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -10,7 +10,7 @@ public class ExtFileNameFilter implements FilenameFilter {
 
     private final Set<String> extsSet;
 
-    ExtFileNameFilter(List<String> exts) {
+    public ExtFileNameFilter(List<String> exts) {
         this.extsSet = new HashSet<>();
         if (exts != null) {
             this.extsSet.addAll(exts);

@@ -1,4 +1,4 @@
-package DuplicateFinder;
+package FileSearcher;
 
 import java.io.File;
 import java.io.FilenameFilter;

@@ -86,12 +86,12 @@ public class DuplicateDeleteSoluter {
         return result;
     }
 
-    public DuplicateDeleteSoluter(List<Rule> rules) {
-        this(rules, false);
+    public DuplicateDeleteSoluter(List<Rule> lSaveRules) {
+        this(lSaveRules, false);
     }
 
-    public DuplicateDeleteSoluter(List<Rule> rules, boolean bSaveOnlyOne) {
-        this.rules.addAll(rules);
+    public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean bSaveOnlyOne) {
+        this.rules.addAll(lSaveRules);
         this.bSaveOnlyOne = bSaveOnlyOne;
     }
 }
