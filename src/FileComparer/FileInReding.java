@@ -1,4 +1,4 @@
-package DuplicateFinder;
+package FileComparer;
 
 import java.io.Closeable;
 import java.io.File;

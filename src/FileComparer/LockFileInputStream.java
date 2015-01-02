@@ -1,4 +1,4 @@
-package DuplicateFinder;
+package FileComparer;
 
 //import com.sun.nio.file.ExtendedOpenOption;
 import java.io.Closeable;
