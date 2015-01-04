@@ -41,7 +41,7 @@ public class FileComparer {
 
     private String getFileExtensionByName(String fileName) {
         int i = fileName.lastIndexOf('.');
-        return i >= 0 ? fileName.substring(i + 1) : "";
+        return i >= 0 ? fileName.substring(i + 1).toLowerCase() : "";
     }
 
     private void compare(Map<Long, List<File>> hmSizeGrouping) throws IOException {
@@ -51,19 +51,19 @@ public class FileComparer {
             List<File> lOneSize = eOneSize.getValue();
             if (lOneSize.size() > 1) {
                 if (this.bDiffByExt) {
-                    Map<String, List<File>> hmGroupedByExt = new HashMap<>();
+                    Map<String, List<File>> mGroupedByExt = new HashMap<>();
                     lOneSize.stream().forEach(file -> {
                         String ext = getFileExtensionByName(file.getName());
                         List<File> filesByExt;
-                        if (hmGroupedByExt.containsKey(ext)) {
-                            filesByExt = hmGroupedByExt.get(ext);
+                        if (mGroupedByExt.containsKey(ext)) {
+                            filesByExt = mGroupedByExt.get(ext);
                         } else {
-                            hmGroupedByExt.put(ext, filesByExt = new ArrayList<>());
+                            mGroupedByExt.put(ext, filesByExt = new ArrayList<>());
                         }
                         filesByExt.add(file);
                     });
                     List<File[]> groups = new ArrayList<>();
-                    for (List<File> filesByExt : hmGroupedByExt.values()) {
+                    for (List<File> filesByExt : mGroupedByExt.values()) {
                         if (filesByExt.size() > 1) {
                             groups.addAll(new FileSizeGroup(filesByExt).getGroups());
                         }

@@ -8,6 +8,7 @@ public class DuplicateDeleteSoluter {
 
     private final boolean bSaveOnlyOne;
     private final List<Rule> rules = new ArrayList<>();
+    private final List<String> lSavePrefer = new ArrayList<>();
 
     public CheckedFile[] sol(File[] dups) {
         int n = dups.length;
@@ -17,6 +18,24 @@ public class DuplicateDeleteSoluter {
         CheckedFile[] result = new CheckedFile[n];
         for (int i = 0; i < n; i++) {
             result[i] = new CheckedFile(dups[i]);
+        }
+        if (!this.lSavePrefer.isEmpty()) {
+            boolean bOneSaved = false;
+            for (CheckedFile cf : result) {
+                boolean bPrefer = false;
+                String fn = cf.file.getAbsolutePath();
+                for (String dir : this.lSavePrefer) {
+                    if (fn.startsWith(dir)) {
+                        bPrefer = true;
+                        break;
+                    }
+                }
+                if (bPrefer) {
+                    bOneSaved = true;
+                } else if (bOneSaved) {
+                    cf.del = true;
+                }
+            }
         }
         for (Rule rule : this.rules) {
             Param param = rule.param;
@@ -91,7 +110,14 @@ public class DuplicateDeleteSoluter {
     }
 
     public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean bSaveOnlyOne) {
+        this(lSaveRules, bSaveOnlyOne, null);
+    }
+
+    public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean bSaveOnlyOne, List<String> lSavePrefer) {
         this.rules.addAll(lSaveRules);
         this.bSaveOnlyOne = bSaveOnlyOne;
+        if (lSavePrefer != null) {
+            this.lSavePrefer.addAll(lSavePrefer);
+        }
     }
 }

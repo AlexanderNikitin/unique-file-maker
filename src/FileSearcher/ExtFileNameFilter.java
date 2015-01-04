@@ -13,12 +13,14 @@ public class ExtFileNameFilter implements FilenameFilter {
     public ExtFileNameFilter(List<String> exts) {
         this.extsSet = new HashSet<>();
         if (exts != null) {
-            this.extsSet.addAll(exts);
+            for (String ext : exts) {
+                this.extsSet.add(ext.toLowerCase());
+            }
         }
     }
 
     @Override
     public boolean accept(File dir, String name) {
-        return this.extsSet.isEmpty() || this.extsSet.contains(name.substring(name.lastIndexOf('.') + 1));
+        return this.extsSet.isEmpty() || this.extsSet.contains(name.substring(name.lastIndexOf('.') + 1).toLowerCase());
     }
 }

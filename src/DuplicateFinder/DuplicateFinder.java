@@ -47,6 +47,7 @@ public class DuplicateFinder {
         lOptions.add(new Option("delete"));
         lOptions.add(new Option("help"));
         lOptions.add(new Option("exclude", 'x', true));
+        lOptions.add(new Option("saveprefer", true));
 
         Map<String, Option> opts = new CommandLineArgumentParser(lOptions, true).parse(args).mapOptions();
 
@@ -113,9 +114,16 @@ public class DuplicateFinder {
 
         //need check
         boolean bNeedCheck = opts.containsKey("check");
-        
+
         //save only one
         boolean bSaveOnlyOne = opts.containsKey("saveonlyone");
+
+        //save directory priority (prefer save in dirictory)
+        List<String> lSavePrefer = null;
+        Option oSavePrefer = opts.get("saveprefer");
+        if (oSavePrefer != null) {
+            lSavePrefer = oSavePrefer.getArguments();
+        }
 
         //need check
         boolean bDel = opts.containsKey("delete");
@@ -136,13 +144,15 @@ public class DuplicateFinder {
             lSaveRules.add(new Rule(Param.FILENAME_LENGTH, true));
             lSaveRules.add(new Rule(Param.PATH_LENGTH, true));
 
-            DuplicateDeleteSoluter dds = new DuplicateDeleteSoluter(lSaveRules, bSaveOnlyOne);
+            DuplicateDeleteSoluter dds = new DuplicateDeleteSoluter(lSaveRules, bSaveOnlyOne, lSavePrefer);
 
             List<CheckedFile[]> deletePreparation = new ArrayList<>();
             compare.values().stream().forEach(groups -> {
-                groups.stream().filter(grup -> grup.length > 1).forEach(group -> {
-                    deletePreparation.add(dds.sol(group));
-                });
+                groups.stream()
+                        .filter(grup -> grup.length > 1)
+                        .map(group -> dds.sol(group))
+                        .filter(group -> group != null)
+                        .forEach(group -> deletePreparation.add(group));
             });
             for (CheckedFile[] group : deletePreparation) {
                 for (CheckedFile cf : group) {

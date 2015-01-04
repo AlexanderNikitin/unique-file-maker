@@ -18,13 +18,13 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
     public final List<File> files = new ArrayList<>();
     private final FilenameFilter fnf;
     private final Set<String> setVisitedDirs;
-    private final List<Pattern> skipDir;
+    private final List<Pattern> skipPatternDir;
 
     @Override
     public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attr) {
         File file = path.toFile();
-        String n = file.getName();
-        for (Pattern p : this.skipDir) {
+        String n = file.getAbsolutePath();
+        for (Pattern p : this.skipPatternDir) {
             if (p.matcher(n).find()) {
                 return FileVisitResult.SKIP_SUBTREE;
             }
@@ -60,15 +60,21 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
         this.fnf = fnf;
         this.setVisitedDirs = new HashSet<>();
 
-        this.skipDir = new ArrayList<>();
+        this.skipPatternDir = new ArrayList<>();
         int flags = Pattern.CASE_INSENSITIVE;
-        this.skipDir.add(Pattern.compile("^backup_\\d+$", flags));
-        this.skipDir.add(Pattern.compile("_files$", flags));
+        char sch = File.separatorChar;
+        String separator = Character.toString(sch);
+        if (sch == '\\') {
+            separator = '\\' + separator;
+        }
+        this.skipPatternDir.add(Pattern.compile(separator + "backup_\\d+$", flags));
+        this.skipPatternDir.add(Pattern.compile("_files$", flags));
+        this.skipPatternDir.add(Pattern.compile("\\$RECYCLE\\.BIN", flags));
 
         if (lsExclide != null) {
             for (String s : lsExclide) {
                 try {
-                    this.skipDir.add(Pattern.compile(s, flags));
+                    this.skipPatternDir.add(Pattern.compile(s, flags));
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
                 }
