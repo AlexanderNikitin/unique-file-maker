@@ -16,6 +16,8 @@ public class CheckedFile {
     public final int IS_COPY;
     public final int IS_ENGLISH_FILE_NAME;
 
+    public final String cacheAbsolutePath;
+
     public final Map<Param, Integer> params;
 
     public CheckedFile(File file) {
@@ -62,5 +64,7 @@ public class CheckedFile {
         this.params.put(Param.DIRECTORY_DEPTH, this.DIRECTORY_DEPTH);
         this.params.put(Param.FILENAME_LENGTH, this.FILENAME_LENGTH);
         this.params.put(Param.PATH_LENGTH, this.PATH_LENGTH);
+
+        this.cacheAbsolutePath = this.file.getAbsolutePath();
     }
 }

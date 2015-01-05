@@ -48,6 +48,7 @@ public class DuplicateFinder {
         lOptions.add(new Option("help"));
         lOptions.add(new Option("exclude", 'x', true));
         lOptions.add(new Option("saveprefer", true));
+        lOptions.add(new Option("log", true));
 
         Map<String, Option> opts = new CommandLineArgumentParser(lOptions, true).parse(args).mapOptions();
 
@@ -75,11 +76,19 @@ public class DuplicateFinder {
             return;
         }
 
+        //log
+        Option oLog = opts.get("log");
+        String logFileName = null;
+        if (oLog != null) {
+            logFileName = oLog.getArguments().get(0);
+        }
+        Log log = new Log(logFileName);
+
         for (Option opt : opts.values()) {
-            System.out.println(opt.name);
+            log.log(opt.name);
             if (opt.hasArguments) {
                 for (String s : opt.getArguments()) {
-                    System.out.println("\t" + s);
+                    log.log("\t" + s);
                 }
             }
         }
@@ -156,16 +165,16 @@ public class DuplicateFinder {
             });
             for (CheckedFile[] group : deletePreparation) {
                 for (CheckedFile cf : group) {
-                    System.out.println((cf.del ? "[x] " : "[ ] ") + cf.file.getAbsolutePath());
+                    log.log((cf.del ? "[x] " : "[ ] ") + cf.file.getAbsolutePath());
                 }
-                System.out.println(str_repeat("-", 100));
+                log.log(str_repeat("-", 100));
             }
             if (bDel) {
                 FileDeleter fd = new FileDeleter();
                 for (CheckedFile[] group : deletePreparation) {
                     fd.delDups(group);
                 }
-                System.out.println("Deleted: " + fd.cnt());
+                log.log("Deleted: " + fd.cnt());
             }
         }
     }
