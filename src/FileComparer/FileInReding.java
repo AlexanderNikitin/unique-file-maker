@@ -34,7 +34,7 @@ public class FileInReding implements Closeable {
     public boolean read() throws IOException {
         int res = this.lfis.read(this.bb);
         this.bb.rewind();
-        return res > 0;
+        return res >= 0;
     }
 
     @Override
