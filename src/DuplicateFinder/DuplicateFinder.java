@@ -33,7 +33,7 @@ public class DuplicateFinder {
         return sb.toString();
     }
 
-    public static void print(Map<Long, List<File[]>> dupsGroups) {
+    private static void print(Map<Long, List<File[]>> dupsGroups) {
         dupsGroups.entrySet().stream().forEach(arFileOneSize -> {
             System.out.println(arFileOneSize.getKey());
             System.out.println(str_repeat_optimal("-", 50));

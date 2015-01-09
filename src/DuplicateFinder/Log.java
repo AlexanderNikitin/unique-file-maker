@@ -8,19 +8,6 @@ public class Log {
 
     private final List<PrintStream> logFiles;
 
-    public Log(String filename) {
-        if (filename == null || filename.isEmpty()) {
-            this.logFiles = null;
-        } else {
-            this.logFiles = new ArrayList<>();
-            try {
-                this.logFiles.add(new PrintStream(new File(filename)));
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
-        }
-    }
-
     public Log(List<String> filenames) {
         if (filenames == null || filenames.isEmpty()) {
             this.logFiles = null;
