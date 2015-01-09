@@ -15,10 +15,14 @@ import java.util.Map;
 
 public class DuplicateFinder {
 
-    private static String str_repeat(String s, int c) {
-        StringBuilder sb = new StringBuilder(s.length() * c);
-        for (int i = 0; i < c; i++) {
-            sb.append(s);
+    private static String str_repeat_optimal(String s, int c) {
+        StringBuilder sb = new StringBuilder(c * s.length()), temp = new StringBuilder(s);
+        while (c > 0) {
+            if ((c & 1) > 0) {
+                sb.append(temp);
+                temp.append(temp);
+                c >>= 1;
+            }
         }
         return sb.toString();
     }
@@ -26,12 +30,12 @@ public class DuplicateFinder {
     public static void print(Map<Long, List<File[]>> dupsGroups) {
         dupsGroups.entrySet().stream().forEach(arFileOneSize -> {
             System.out.println(arFileOneSize.getKey());
-            System.out.println(str_repeat("-", 50));
+            System.out.println(str_repeat_optimal("-", 50));
             arFileOneSize.getValue().stream().filter(dups -> dups.length > 1).forEach(dups -> {
                 for (File dup : dups) {
                     System.out.println(dup.toString());
                 }
-                System.out.println(str_repeat("-", 50));
+                System.out.println(str_repeat_optimal("-", 50));
             });
         });
     }
@@ -167,7 +171,7 @@ public class DuplicateFinder {
                 for (CheckedFile cf : group) {
                     log.log((cf.del ? "[x] " : "[ ] ") + cf.file.getAbsolutePath());
                 }
-                log.log(str_repeat("-", 100));
+                log.log(str_repeat_optimal("-", 100));
             }
             if (bDel) {
                 FileDeleter fd = new FileDeleter();
