@@ -26,9 +26,9 @@ public class DuplicateFinder {
         while (c > 0) {
             if ((c & 1) > 0) {
                 sb.append(temp);
-                temp.append(temp);
-                c >>= 1;
             }
+            temp.append(temp);
+            c >>= 1;
         }
         return sb.toString();
     }
