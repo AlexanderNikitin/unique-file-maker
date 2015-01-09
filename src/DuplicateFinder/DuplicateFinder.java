@@ -16,6 +16,12 @@ import java.util.Map;
 public class DuplicateFinder {
 
     private static String str_repeat_optimal(String s, int c) {
+        if (s == null) {
+            return null;
+        }
+        if (s.isEmpty() || (c == 0)) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder(c * s.length()), temp = new StringBuilder(s);
         while (c > 0) {
             if ((c & 1) > 0) {
@@ -74,6 +80,10 @@ public class DuplicateFinder {
                     + "\tIf this option missing program will not delete files.\n"
                     + "--exclude, -x\n"
                     + "\tOptional. Regular expression to exclude directories to scan.\n"
+                    + "--saveprefer, -s <directory1[ directory2]>\n"
+                    + "\tOptional. Priority list of directories for save one of all duplicates\n"
+                    + "--log, -l <path to log[ path to log 2]>\n"
+                    + "\tOptional. Path to log file for logging file relations.\n"
                     + "--help, -h\n"
                     + "\tIf you read this annotatin, you know it:)\n";
             System.out.println(help);
@@ -82,11 +92,7 @@ public class DuplicateFinder {
 
         //log
         Option oLog = opts.get("log");
-        String logFileName = null;
-        if (oLog != null) {
-            logFileName = oLog.getArguments().get(0);
-        }
-        Log log = new Log(logFileName);
+        Log log = new Log(oLog == null ? null : oLog.getArguments());
 
         for (Option opt : opts.values()) {
             log.log(opt.name);

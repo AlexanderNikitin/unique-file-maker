@@ -1,24 +1,47 @@
 package DuplicateFinder;
 
-import java.io.FileNotFoundException;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Log {
 
-    private final PrintStream logFile;
+    private final List<PrintStream> logFiles;
 
-    public Log(String filename) throws FileNotFoundException {
-        if (filename == null) {
-            this.logFile = null;
+    public Log(String filename) {
+        if (filename == null || filename.isEmpty()) {
+            this.logFiles = null;
         } else {
-            this.logFile = new PrintStream(new File(filename));
+            this.logFiles = new ArrayList<>();
+            try {
+                this.logFiles.add(new PrintStream(new File(filename)));
+            } catch (Exception e) {
+                System.err.println(e.getMessage());
+            }
+        }
+    }
+
+    public Log(List<String> filenames) {
+        if (filenames == null || filenames.isEmpty()) {
+            this.logFiles = null;
+        } else {
+            this.logFiles = new ArrayList<>();
+            for (String filename : filenames) {
+                try {
+                    this.logFiles.add(new PrintStream(new File(filename)));
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
         }
     }
 
     public void log(String message) {
         if (message != null) {
-            if (this.logFile != null) {
-                this.logFile.println(message);
+            if (this.logFiles != null) {
+                for (PrintStream log : this.logFiles) {
+                    log.println(message);
+                }
             }
             System.out.println(message);
         }
@@ -26,6 +49,8 @@ public class Log {
 
     @Override
     public void finalize() {
-        this.logFile.close();
+        for (PrintStream log : this.logFiles) {
+            log.close();
+        }
     }
 }
