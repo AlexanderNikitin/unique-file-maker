@@ -46,6 +46,22 @@ public class DuplicateFinder {
         });
     }
 
+    private static String getHumanBytes(long speedByte) {
+        long byteInKb = 1024;
+        long byteInMb = byteInKb * byteInKb;
+        long byteInGb = byteInMb * byteInKb;
+        if (speedByte >= byteInGb) {
+            return (speedByte / byteInGb) + " GB";
+        }
+        if (speedByte >= byteInMb) {
+            return (speedByte / byteInMb) + " MB";
+        }
+        if (speedByte >= byteInKb) {
+            return (speedByte / byteInKb) + " KB";
+        }
+        return speedByte + " B";
+    }
+
     public static void main(String[] args) throws Exception {
         List<Option> lOptions = new ArrayList<>();
         lOptions.add(new Option("ext", true));
@@ -173,12 +189,17 @@ public class DuplicateFinder {
                         .filter(group -> group != null)
                         .forEach(group -> deletePreparation.add(group));
             });
+            long delSize = 0;
             for (CheckedFile[] group : deletePreparation) {
                 for (CheckedFile cf : group) {
-                    log.log((cf.del ? "[x] " : "[ ] ") + cf.file.getAbsolutePath());
+                    log.log((cf.del ? "[x] " : "[ ] ") + cf.cacheAbsolutePath);
+                    if (cf.del) {
+                        delSize += cf.file.length();
+                    }
                 }
                 log.log(str_repeat_optimal("-", 100));
             }
+            log.log("Delete size: " + getHumanBytes(delSize));
             if (bDel) {
                 FileDeleter fd = new FileDeleter();
                 for (CheckedFile[] group : deletePreparation) {

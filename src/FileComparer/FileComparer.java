@@ -169,21 +169,4 @@ public class FileComparer {
     public Map<Long, List<File[]>> getResult() {
         return this.dupsGroups;
     }
-    /*
-     private static String getHumanSpeed(long speedByte) {
-     long byteInKb = 1024;
-     long byteInMb = byteInKb * byteInKb;
-     long byteInGb = byteInMb * byteInKb;
-     if (speedByte >= byteInGb) {
-     return (speedByte / byteInGb) + " GB/s";
-     }
-     if (speedByte >= byteInMb) {
-     return (speedByte / byteInMb) + " MB/s";
-     }
-     if (speedByte >= byteInKb) {
-     return (speedByte / byteInKb) + " KB/s";
-     }
-     return speedByte + " B/s";
-     }
-     */
 }
