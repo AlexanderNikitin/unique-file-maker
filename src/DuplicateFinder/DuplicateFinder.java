@@ -202,10 +202,29 @@ public class DuplicateFinder {
             log.log("Delete size: " + getHumanBytes(delSize));
             if (bDel) {
                 FileDeleter fd = new FileDeleter();
+                int cnt = 0;
                 for (CheckedFile[] group : deletePreparation) {
-                    fd.delDups(group);
+                    boolean bIsNotDel = false;
+                    for (CheckedFile file : group) {
+                        if (!file.del) {
+                            bIsNotDel = true;
+                            break;
+                        }
+                    }
+                    if (!bIsNotDel) {
+                        throw new Exception("All files will die!!!");
+                    }
+                    for (CheckedFile f : group) {
+                        if (f.del) {
+                            if (fd.delete(f.file)) {
+                                cnt++;
+                            } else {
+                                System.out.println("Error delete: " + f.cacheAbsolutePath);
+                            }
+                        }
+                    }
                 }
-                log.log("Deleted: " + fd.cnt());
+                log.log("Deleted: " + cnt);
             }
         }
     }

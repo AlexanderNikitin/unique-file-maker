@@ -6,55 +6,39 @@ import java.util.*;
 public class FileDeleter {
 
     private final Map<String, File> fsf;
-    private int cnt = 0;
 
-    public int cnt() {
-        return this.cnt;
-    }
-
-    public void delDups(CheckedFile[] files) throws Exception {
-        boolean bIsNotDel = false;
-        for (CheckedFile file : files) {
-            if (!file.del) {
-                bIsNotDel = true;
-                break;
+    public boolean delete(File file) {
+        String root = file.toPath().getRoot().toString();
+        File gloablBackupDir;
+        if (fsf.containsKey(root)) {
+            gloablBackupDir = fsf.get(root);
+        } else {
+            String sBackupDir = "backup_" + System.currentTimeMillis();
+            gloablBackupDir = new File(root, sBackupDir);
+            if (gloablBackupDir.mkdir()) {
+                fsf.put(root, gloablBackupDir);
+            } else {
+                return false;
             }
         }
-        if (!bIsNotDel) {
-            throw new Exception("All files will die!!!");
+        String sAbsDir = file.getParent();
+        String sDirWithoutRoot = sAbsDir.replace(root, "");
+        File backupDir = new File(gloablBackupDir, sDirWithoutRoot);
+        boolean bExistsDir = backupDir.exists();
+        if (!bExistsDir) {
+            bExistsDir = backupDir.mkdirs();
         }
-        for (CheckedFile f : files) {
-            if (f.del) {
-                File file = f.file;
-                String root = file.toPath().getRoot().toString();
-                File gloablBackupDir;
-                if (fsf.containsKey(root)) {
-                    gloablBackupDir = fsf.get(root);
-                } else {
-                    String sBackupDir = "backup_" + System.currentTimeMillis();
-                    gloablBackupDir = new File(root, sBackupDir);
-                    gloablBackupDir.mkdir();
-                    fsf.put(root, gloablBackupDir);
-                }
-                String sAbsDir = file.getParent();
-                String sDirWithoutRoot = sAbsDir.replace(root, "");
-                File backupDir = new File(gloablBackupDir, sDirWithoutRoot);
-                boolean bExistsDir = backupDir.exists();
-                if (!bExistsDir) {
-                    bExistsDir = backupDir.mkdirs();
-                }
-                if (bExistsDir) {
-                    File to = new File(backupDir, file.getName());
-                    if (file.renameTo(to)) {
-                        this.cnt++;
-                    } else {
-                        System.out.println("error rename: from : " + file.toString() + " to: " + to.toString());
-                    }
-                } else {
-                    System.out.println("err mkdirs: " + backupDir.toString());
-                }
+        if (bExistsDir) {
+            File to = new File(backupDir, file.getName());
+            if (file.renameTo(to)) {
+                return true;
+            } else {
+                System.out.println("error rename: from : " + file.toString() + " to: " + to.toString());
             }
+        } else {
+            System.out.println("err mkdirs: " + backupDir.toString());
         }
+        return false;
     }
 
     public FileDeleter() {
