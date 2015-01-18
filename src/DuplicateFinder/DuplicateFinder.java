@@ -75,6 +75,7 @@ public class DuplicateFinder {
         lOptions.add(new Option("exclude", 'x', true));
         lOptions.add(new Option("saveprefer", true));
         lOptions.add(new Option("log", true));
+        lOptions.add(new Option("nodelete", true));
 
         Map<String, Option> opts = new CommandLineArgumentParser(lOptions, true).parse(args).mapOptions();
 
@@ -100,6 +101,8 @@ public class DuplicateFinder {
                     + "\tOptional. Priority list of directories for save one of all duplicates\n"
                     + "--log, -l <path to log[ path to log 2]>\n"
                     + "\tOptional. Path to log file for logging file relations.\n"
+                    + "--nodelete, -n\n"
+                    + "\tOptional. List of directories wich protect child files of deleting.\n"
                     + "--help, -h\n"
                     + "\tIf you read this annotatin, you know it:)\n";
             System.out.println(help);
@@ -159,6 +162,13 @@ public class DuplicateFinder {
         if (oSavePrefer != null) {
             lSavePrefer = oSavePrefer.getArguments();
         }
+        
+        //no delete list
+        List<String> lNoDelete = null;
+        Option oNoDelete = opts.get("nodelete");
+        if (oNoDelete != null) {
+            lNoDelete = oNoDelete.getArguments();
+        }
 
         //need check
         boolean bDel = opts.containsKey("delete");
@@ -179,7 +189,7 @@ public class DuplicateFinder {
             lSaveRules.add(new Rule(Param.FILENAME_LENGTH, true));
             lSaveRules.add(new Rule(Param.PATH_LENGTH, true));
 
-            DuplicateDeleteSoluter dds = new DuplicateDeleteSoluter(lSaveRules, bSaveOnlyOne, lSavePrefer);
+            DuplicateDeleteSoluter dds = new DuplicateDeleteSoluter(lSaveRules, bSaveOnlyOne, lSavePrefer, lNoDelete);
 
             List<CheckedFile[]> deletePreparation = new ArrayList<>();
             compare.values().stream().forEach(groups -> {

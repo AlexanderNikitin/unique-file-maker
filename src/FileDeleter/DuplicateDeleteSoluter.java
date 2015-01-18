@@ -2,6 +2,7 @@ package FileDeleter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DuplicateDeleteSoluter {
@@ -9,6 +10,7 @@ public class DuplicateDeleteSoluter {
     private final boolean bSaveOnlyOne;
     private final List<Rule> rules = new ArrayList<>();
     private final List<String> lSavePrefer = new ArrayList<>();
+    private final List<String> lNoDelete = new ArrayList<>();
 
     public CheckedFile[] sol(File[] dups) {
         int n = dups.length;
@@ -57,7 +59,8 @@ public class DuplicateDeleteSoluter {
                 int saveValue = saveByMax ? valueMax : valueMin;
                 int delCnt = 0;
                 boolean bEnd = false;
-                for (CheckedFile cf : result) {
+                for (int i = 0; i < result.length; i++) {
+                    CheckedFile cf = result[i];
                     if (cf.del) {
                         delCnt++;
                         continue;
@@ -77,13 +80,28 @@ public class DuplicateDeleteSoluter {
                 }
             }
         }
+        boolean[] bCanDel = new boolean[result.length];
+        Arrays.fill(bCanDel, true);
+        if (!this.lNoDelete.isEmpty()) {
+            for (String dir : this.lNoDelete) {
+                for (int i = 0; i < result.length; i++) {
+                    bCanDel[i] = !result[i].cacheAbsolutePath.startsWith(dir);
+                }
+            }
+        }
+        for (int i = 0; i < result.length; i++) {
+            if (!bCanDel[i]) {
+                result[i].del = false;
+            }
+        }
         if (this.bSaveOnlyOne) {
             boolean bSaved = false;
-            for (CheckedFile cf : result) {
+            for (int i = 0; i < result.length; i++) {
+                CheckedFile cf = result[i];
                 if (cf.del) {
                     continue;
                 }
-                if (bSaved) {
+                if (bSaved && bCanDel[i]) {
                     cf.del = true;
                 } else {
                     bSaved = true;
@@ -109,16 +127,19 @@ public class DuplicateDeleteSoluter {
     }
 
     public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean bSaveOnlyOne) {
-        this(lSaveRules, bSaveOnlyOne, null);
+        this(lSaveRules, bSaveOnlyOne, null, null);
     }
 
-    public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean bSaveOnlyOne, List<String> lSavePrefer) {
+    public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean bSaveOnlyOne, List<String> lSavePrefer, List<String> lNoDelete) {
         if (lSaveRules != null) {
             this.rules.addAll(lSaveRules);
         }
         this.bSaveOnlyOne = bSaveOnlyOne;
         if (lSavePrefer != null) {
             this.lSavePrefer.addAll(lSavePrefer);
+        }
+        if (lNoDelete != null) {
+            this.lNoDelete.addAll(lNoDelete);
         }
     }
 }
