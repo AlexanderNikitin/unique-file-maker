@@ -59,8 +59,7 @@ public class DuplicateDeleteSoluter {
                 int saveValue = saveByMax ? valueMax : valueMin;
                 int delCnt = 0;
                 boolean bEnd = false;
-                for (int i = 0; i < result.length; i++) {
-                    CheckedFile cf = result[i];
+                for (CheckedFile cf : result) {
                     if (cf.del) {
                         delCnt++;
                         continue;

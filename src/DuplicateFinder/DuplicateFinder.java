@@ -19,16 +19,12 @@ public class DuplicateFinder {
         if (s == null) {
             return null;
         }
-        if (s.isEmpty() || (c == 0)) {
+        if (s.isEmpty() || c <= 0) {
             return "";
         }
-        StringBuilder sb = new StringBuilder(c * s.length()), temp = new StringBuilder(s);
-        while (c > 0) {
-            if ((c & 1) > 0) {
-                sb.append(temp);
-            }
-            temp.append(temp);
-            c >>= 1;
+        StringBuilder sb = new StringBuilder(c * s.length());
+        for(int i = 0 ; i < c; i++) {
+            sb.append(s);
         }
         return sb.toString();
     }
