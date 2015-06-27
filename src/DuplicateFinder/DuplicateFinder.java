@@ -23,7 +23,7 @@ public class DuplicateFinder {
             return "";
         }
         StringBuilder sb = new StringBuilder(c * s.length());
-        for(int i = 0 ; i < c; i++) {
+        for (int i = 0; i < c; i++) {
             sb.append(s);
         }
         return sb.toString();
@@ -158,7 +158,7 @@ public class DuplicateFinder {
         if (oSavePrefer != null) {
             lSavePrefer = oSavePrefer.getArguments();
         }
-        
+
         //no delete list
         List<String> lNoDelete = null;
         Option oNoDelete = opts.get("nodelete");

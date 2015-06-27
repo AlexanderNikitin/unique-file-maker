@@ -1,2 +1,6 @@
 /dist/
+.idea
 *.iml
+*.class
+*.html
+*.xml
