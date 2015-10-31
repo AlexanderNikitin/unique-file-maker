@@ -8,10 +8,17 @@ import java.util.Set;
 
 public class ExtFileNameFilter implements FilenameFilter {
 
-    private final Set<String> extsSet;
+    private final Set<String> extsSet = new HashSet<>();
+
+    public ExtFileNameFilter(String... exts) {
+        if (exts != null) {
+            for (String ext : exts) {
+                this.extsSet.add(ext.toLowerCase());
+            }
+        }
+    }
 
     public ExtFileNameFilter(List<String> exts) {
-        this.extsSet = new HashSet<>();
         if (exts != null) {
             for (String ext : exts) {
                 this.extsSet.add(ext.toLowerCase());
