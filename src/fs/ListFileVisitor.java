@@ -7,21 +7,26 @@ import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class ListFileVisitor extends SimpleFileVisitor<Path> {
 
-    public final List<File> files = new ArrayList<>();
+    private static int FLAGS = Pattern.CASE_INSENSITIVE;
+
+    private static Pattern[] SKIP_ALLWAYS = new Pattern[]{
+            Pattern.compile("_files$", FLAGS),
+            Pattern.compile(Pattern.quote("$RECYCLE.BIN"), FLAGS),
+            Pattern.compile(Pattern.quote(File.separatorChar + "backup_") + "\\d+$", FLAGS)
+    };
+
+    final List<File> files = new ArrayList<>();
     private final FilenameFilter filenameFilter;
     private final Set<String> setVisitedDirs;
     private final List<Pattern> skipPatternDir;
 
     @Override
-    public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attr) {
+    public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attributes) {
         File file = path.toFile();
         String n = file.getAbsolutePath();
         for (Pattern p : this.skipPatternDir) {
@@ -43,7 +48,7 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
+    public FileVisitResult visitFile(Path path, BasicFileAttributes attributes) {
         File file = path.toFile();
         if (file.length() > 0 && this.filenameFilter.accept(null, file.getName())) {
             this.files.add(file);
@@ -56,22 +61,17 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
-    public ListFileVisitor(FilenameFilter filenameFilter, List<String> lsExclide) {
+    public ListFileVisitor(FilenameFilter filenameFilter, List<String> exclude) {
         this.filenameFilter = filenameFilter;
         this.setVisitedDirs = new HashSet<>();
 
         this.skipPatternDir = new ArrayList<>();
-        int flags = Pattern.CASE_INSENSITIVE;
-        char sch = File.separatorChar;
-        String separator = (sch == '\\') ? String.format("%c%c", sch, sch) : Character.toString(sch);
-        this.skipPatternDir.add(Pattern.compile(separator + "backup_\\d+$", flags));
-        this.skipPatternDir.add(Pattern.compile("_files$", flags));
-        this.skipPatternDir.add(Pattern.compile("\\$RECYCLE\\.BIN", flags));
+        this.skipPatternDir.addAll(Arrays.asList(SKIP_ALLWAYS));
 
-        if (lsExclide != null) {
-            for (String s : lsExclide) {
+        if (exclude != null) {
+            for (String s : exclude) {
                 try {
-                    this.skipPatternDir.add(Pattern.compile(s, flags));
+                    this.skipPatternDir.add(Pattern.compile(s, FLAGS));
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
                 }
