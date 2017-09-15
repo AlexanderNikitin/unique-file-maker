@@ -12,10 +12,10 @@ import static java.nio.file.StandardOpenOption.READ;
 
 public class LockedFileInputStream implements Closeable {
 
-    private final FileChannel fc;
+    private final FileChannel fileChannel;
 
     public long getLength() throws IOException {
-        return this.fc.size();
+        return this.fileChannel.size();
     }
 
     public LockedFileInputStream(File file) throws IOException {
@@ -23,16 +23,16 @@ public class LockedFileInputStream implements Closeable {
     }
 
     public LockedFileInputStream(Path path) throws IOException {
-        //this.fc = open(path, READ, ExtendedOpenOption.NOSHARE_DELETE, ExtendedOpenOption.NOSHARE_WRITE);
-        this.fc = open(path, READ);
+        //this.fileChannel = open(path, READ, ExtendedOpenOption.NOSHARE_DELETE, ExtendedOpenOption.NOSHARE_WRITE);
+        this.fileChannel = open(path, READ);
     }
 
     public int read(ByteBuffer buffer) throws IOException {
-        return this.fc.read(buffer);
+        return this.fileChannel.read(buffer);
     }
 
     @Override
     public void close() throws IOException {
-        this.fc.close();
+        this.fileChannel.close();
     }
 }
