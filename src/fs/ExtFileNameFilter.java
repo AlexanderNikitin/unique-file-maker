@@ -10,14 +10,6 @@ public class ExtFileNameFilter implements FilenameFilter {
 
     private final Set<String> extensionSet = new HashSet<>();
 
-    public ExtFileNameFilter(String... exts) {
-        if (exts != null) {
-            for (String ext : exts) {
-                this.extensionSet.add(ext.toLowerCase());
-            }
-        }
-    }
-
     public ExtFileNameFilter(List<String> exts) {
         if (exts != null) {
             for (String ext : exts) {

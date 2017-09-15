@@ -8,10 +8,6 @@ public class CommandLineArgumentParser {
     private final Map<String, Option> indexByName;
     private final boolean escape;
 
-    public CommandLineArgumentParser(List<Option> options) throws Exception {
-        this(options, false);
-    }
-
     public CommandLineArgumentParser(List<Option> options, boolean escape) throws Exception {
         this.indexByShortName = new LinkedHashMap<>();
         this.indexByName = new LinkedHashMap<>();
