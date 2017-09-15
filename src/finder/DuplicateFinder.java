@@ -149,18 +149,18 @@ public class DuplicateFinder {
 
             List<Rule> lSaveRules = new ArrayList<>();
 
-            lSaveRules.add(new Rule(Param.IS_ENGLISH_FILE_NAME, false));
-            lSaveRules.add(new Rule(Param.IS_COPY, false));
-            lSaveRules.add(new Rule(Param.DIRECTORY_DEPTH, true));
-            lSaveRules.add(new Rule(Param.FILENAME_LENGTH, true));
-            lSaveRules.add(new Rule(Param.PATH_LENGTH, true));
+            lSaveRules.add(new Rule(Parameters.IS_ENGLISH_FILE_NAME, false));
+            lSaveRules.add(new Rule(Parameters.IS_COPY, false));
+            lSaveRules.add(new Rule(Parameters.DIRECTORY_DEPTH, true));
+            lSaveRules.add(new Rule(Parameters.FILENAME_LENGTH, true));
+            lSaveRules.add(new Rule(Parameters.PATH_LENGTH, true));
 
-            DuplicateDeleteSoluter dds = new DuplicateDeleteSoluter(lSaveRules, bSaveOnlyOne, lSavePrefer, lNoDelete);
+            DuplicateDeleteSolver dds = new DuplicateDeleteSolver(lSaveRules, bSaveOnlyOne, lSavePrefer, lNoDelete);
 
             List<CheckedFile[]> deletePreparation = new ArrayList<>();
             compare.values().stream().forEach(groups -> groups.stream()
                     .filter(group -> group.length > 1)
-                    .map(group -> dds.sol(group))
+                    .map(group -> dds.solve(group))
                     .filter(group -> group != null)
                     .forEach(group -> deletePreparation.add(group)));
             long delSize = 0;

@@ -18,7 +18,7 @@ public class CheckedFile {
 
     public final String cacheAbsolutePath;
 
-    public final Map<Param, Integer> params;
+    public final Map<Parameters, Integer> params;
 
     public CheckedFile(File file) {
         this.file = file;
@@ -49,21 +49,21 @@ public class CheckedFile {
         this.FILENAME_LENGTH = sFileName.length();
         this.PATH_LENGTH = sAbsPath.length();
 
-        this.params = new EnumMap<>(Param.class);
+        this.params = new EnumMap<>(Parameters.class);
 
-        /*DuplicateDeleteSoluter.Param[] ps = DuplicateDeleteSoluter.Param.values();
-         for (DuplicateDeleteSoluter.Param p : ps) {
+        /*DuplicateDeleteSolver.Parameters[] ps = DuplicateDeleteSolver.Parameters.values();
+         for (DuplicateDeleteSolver.Parameters p : ps) {
          try {
          this.params.put(p, this.getClass().getField(p.name()).getInt(this));
          } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
          Logger.getLogger(CheckedFile.class.getName()).log(Level.SEVERE, null, ex);
          }
          }*/
-        this.params.put(Param.IS_ENGLISH_FILE_NAME, this.IS_ENGLISH_FILE_NAME);
-        this.params.put(Param.IS_COPY, this.IS_COPY);
-        this.params.put(Param.DIRECTORY_DEPTH, this.DIRECTORY_DEPTH);
-        this.params.put(Param.FILENAME_LENGTH, this.FILENAME_LENGTH);
-        this.params.put(Param.PATH_LENGTH, this.PATH_LENGTH);
+        this.params.put(Parameters.IS_ENGLISH_FILE_NAME, this.IS_ENGLISH_FILE_NAME);
+        this.params.put(Parameters.IS_COPY, this.IS_COPY);
+        this.params.put(Parameters.DIRECTORY_DEPTH, this.DIRECTORY_DEPTH);
+        this.params.put(Parameters.FILENAME_LENGTH, this.FILENAME_LENGTH);
+        this.params.put(Parameters.PATH_LENGTH, this.PATH_LENGTH);
 
         this.cacheAbsolutePath = this.file.getAbsolutePath();
     }
