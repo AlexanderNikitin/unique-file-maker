@@ -166,8 +166,8 @@ public class DuplicateFinder {
             long delSize = 0;
             for (CheckedFile[] group : deletePreparation) {
                 for (CheckedFile cf : group) {
-                    log.log((cf.del ? "[x] " : "[ ] ") + cf.cacheAbsolutePath);
-                    if (cf.del) {
+                    log.log((cf.delete ? "[x] " : "[ ] ") + cf.cacheAbsolutePath);
+                    if (cf.delete) {
                         delSize += cf.file.length();
                     }
                 }
@@ -180,7 +180,7 @@ public class DuplicateFinder {
                 for (CheckedFile[] group : deletePreparation) {
                     boolean bIsNotDel = false;
                     for (CheckedFile file : group) {
-                        if (!file.del) {
+                        if (!file.delete) {
                             bIsNotDel = true;
                             break;
                         }
@@ -189,7 +189,7 @@ public class DuplicateFinder {
                         throw new Exception("All files will die!!!");
                     }
                     for (CheckedFile f : group) {
-                        if (f.del) {
+                        if (f.delete) {
                             if (fd.delete(f.file)) {
                                 cnt++;
                             } else {

@@ -8,12 +8,12 @@ import java.util.Set;
 
 public class ExtFileNameFilter implements FilenameFilter {
 
-    private final Set<String> extsSet = new HashSet<>();
+    private final Set<String> extensionSet = new HashSet<>();
 
     public ExtFileNameFilter(String... exts) {
         if (exts != null) {
             for (String ext : exts) {
-                this.extsSet.add(ext.toLowerCase());
+                this.extensionSet.add(ext.toLowerCase());
             }
         }
     }
@@ -21,13 +21,13 @@ public class ExtFileNameFilter implements FilenameFilter {
     public ExtFileNameFilter(List<String> exts) {
         if (exts != null) {
             for (String ext : exts) {
-                this.extsSet.add(ext.toLowerCase());
+                this.extensionSet.add(ext.toLowerCase());
             }
         }
     }
 
     @Override
     public boolean accept(File dir, String name) {
-        return this.extsSet.isEmpty() || this.extsSet.contains(name.substring(name.lastIndexOf('.') + 1).toLowerCase());
+        return this.extensionSet.isEmpty() || this.extensionSet.contains(name.substring(name.lastIndexOf('.') + 1).toLowerCase());
     }
 }

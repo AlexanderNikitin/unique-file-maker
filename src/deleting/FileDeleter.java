@@ -6,25 +6,25 @@ import java.util.Map;
 
 public class FileDeleter {
 
-    private final Map<String, File> fsf;
+    private final Map<String, File> fileSystemFolders = new HashMap<>();
 
     public boolean delete(File file) {
         String root = file.toPath().getRoot().toString();
-        File gloablBackupDir;
-        if (fsf.containsKey(root)) {
-            gloablBackupDir = fsf.get(root);
+        File globalBackupDir;
+        if (fileSystemFolders.containsKey(root)) {
+            globalBackupDir = fileSystemFolders.get(root);
         } else {
             String sBackupDir = "backup_" + System.currentTimeMillis();
-            gloablBackupDir = new File(root, sBackupDir);
-            if (gloablBackupDir.mkdir()) {
-                fsf.put(root, gloablBackupDir);
+            globalBackupDir = new File(root, sBackupDir);
+            if (globalBackupDir.mkdir()) {
+                fileSystemFolders.put(root, globalBackupDir);
             } else {
                 return false;
             }
         }
         String sAbsDir = file.getParent();
         String sDirWithoutRoot = sAbsDir.replace(root, "");
-        File backupDir = new File(gloablBackupDir, sDirWithoutRoot);
+        File backupDir = new File(globalBackupDir, sDirWithoutRoot);
         boolean bExistsDir = backupDir.exists();
         if (!bExistsDir) {
             bExistsDir = backupDir.mkdirs();
@@ -40,9 +40,5 @@ public class FileDeleter {
             System.out.println("err mkdirs: " + backupDir.toString());
         }
         return false;
-    }
-
-    public FileDeleter() {
-        this.fsf = new HashMap<>();
     }
 }

@@ -9,7 +9,7 @@ public class FileInReading implements Closeable {
 
     private static final int BUFFER_SIZE = 1024 * 4;
 
-    private final LockFileInputStream lfis;
+    private final LockedFileInputStream stream;
     public final ByteBuffer bb;
     private final File file;
 
@@ -18,7 +18,7 @@ public class FileInReading implements Closeable {
     }
 
     public long getLength() throws IOException {
-        return this.lfis.getLength();
+        return this.stream.getLength();
     }
 
     public ByteBuffer getBuffer() {
@@ -27,18 +27,18 @@ public class FileInReading implements Closeable {
 
     public FileInReading(File file) throws IOException {
         this.file = file;
-        this.lfis = new LockFileInputStream(file);
+        this.stream = new LockedFileInputStream(file);
         this.bb = ByteBuffer.allocate((int) Math.min(BUFFER_SIZE, this.file.length()));
     }
 
     public boolean read() throws IOException {
-        int res = this.lfis.read(this.bb);
+        int res = this.stream.read(this.bb);
         this.bb.rewind();
         return res >= 0;
     }
 
     @Override
     public void close() throws IOException {
-        this.lfis.close();
+        this.stream.close();
     }
 }

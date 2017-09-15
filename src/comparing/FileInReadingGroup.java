@@ -11,7 +11,7 @@ import java.util.Map;
 
 public final class FileInReadingGroup implements Closeable {
 
-    private List<FileInReading> alReading;
+    private List<FileInReading> reading;
 
     public static FileInReadingGroup initFromFiles(List<File> files) throws Exception {
         List<FileInReading> alReading = new ArrayList<>();
@@ -48,16 +48,16 @@ public final class FileInReadingGroup implements Closeable {
     }
 
     private FileInReadingGroup(List<FileInReading> files) {
-        this.alReading = new ArrayList<>();
-        this.alReading.addAll(files);
+        this.reading = new ArrayList<>();
+        this.reading.addAll(files);
     }
 
     public int count() {
-        return this.alReading.size();
+        return this.reading.size();
     }
 
     public boolean read() throws IOException {
-        for (FileInReading rf : this.alReading) {
+        for (FileInReading rf : this.reading) {
             if (!rf.read()) {
                 return false;
             }
@@ -66,12 +66,12 @@ public final class FileInReadingGroup implements Closeable {
     }
 
     public List<FileInReadingGroup> separateDiff() {
-        int n = this.alReading.size();
+        int n = this.reading.size();
         if (n < 2) {
             return null;
         }
         Map<ByteBuffer, List<FileInReading>> grouper = new HashMap<>();
-        for (FileInReading rf : this.alReading) {
+        for (FileInReading rf : this.reading) {
             ByteBuffer bb = rf.bb;
             List<FileInReading> curList;
             if (grouper.containsKey(bb)) {
@@ -81,11 +81,11 @@ public final class FileInReadingGroup implements Closeable {
             }
             curList.add(rf);
         }
-        this.alReading = null;
+        this.reading = null;
         List<FileInReadingGroup> result = new ArrayList<>();
         for (List<FileInReading> l : grouper.values()) {
-            if (this.alReading == null) {
-                this.alReading = l;
+            if (this.reading == null) {
+                this.reading = l;
             } else {
                 result.add(new FileInReadingGroup(l));
             }
@@ -94,17 +94,17 @@ public final class FileInReadingGroup implements Closeable {
     }
 
     public File[] fiels() {
-        int n = this.alReading.size();
+        int n = this.reading.size();
         File[] result = new File[n];
         for (int i = 0; i < n; i++) {
-            result[i] = this.alReading.get(i).file();
+            result[i] = this.reading.get(i).file();
         }
         return result;
     }
 
     @Override
     public void close() throws IOException {
-        for (FileInReading rf : this.alReading) {
+        for (FileInReading rf : this.reading) {
             rf.close();
         }
     }

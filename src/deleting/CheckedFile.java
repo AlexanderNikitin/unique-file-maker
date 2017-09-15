@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public class CheckedFile {
 
     public final File file;
-    public boolean del;
+    public boolean delete;
 
     public final int DIRECTORY_DEPTH;
     public final int FILENAME_LENGTH;
@@ -22,7 +22,7 @@ public class CheckedFile {
 
     public CheckedFile(File file) {
         this.file = file;
-        this.del = false;
+        this.delete = false;
 
         String sFileName = file.getName();
         Pattern pattern = Pattern.compile("\\s\\(\\d{0,3}\\)(\\.[^\\.]+){0,1}$");

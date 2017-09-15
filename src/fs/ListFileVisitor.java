@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 public class ListFileVisitor extends SimpleFileVisitor<Path> {
 
     public final List<File> files = new ArrayList<>();
-    private final FilenameFilter fnf;
+    private final FilenameFilter filenameFilter;
     private final Set<String> setVisitedDirs;
     private final List<Pattern> skipPatternDir;
 
@@ -45,7 +45,7 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFile(Path path, BasicFileAttributes attr) {
         File file = path.toFile();
-        if (file.length() > 0 && this.fnf.accept(null, file.getName())) {
+        if (file.length() > 0 && this.filenameFilter.accept(null, file.getName())) {
             this.files.add(file);
         }
         return FileVisitResult.CONTINUE;
@@ -56,8 +56,8 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
-    public ListFileVisitor(FilenameFilter fnf, List<String> lsExclide) {
-        this.fnf = fnf;
+    public ListFileVisitor(FilenameFilter filenameFilter, List<String> lsExclide) {
+        this.filenameFilter = filenameFilter;
         this.setVisitedDirs = new HashSet<>();
 
         this.skipPatternDir = new ArrayList<>();

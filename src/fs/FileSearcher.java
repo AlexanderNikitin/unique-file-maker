@@ -14,21 +14,21 @@ import java.util.Set;
 
 public class FileSearcher {
 
-    private final List<String> exts;
-    private final boolean bRecursive;
-    private final List<String> lsExclide;
+    private final List<String> extensions;
+    private final boolean recursive;
+    private final List<String> exclude;
 
-    public FileSearcher(List<String> exts, boolean bRecursive, List<String> lsExclide) {
-        this.exts = exts;
-        this.bRecursive = bRecursive;
-        this.lsExclide = lsExclide;
+    public FileSearcher(List<String> extensions, boolean recursive, List<String> exclude) {
+        this.extensions = extensions;
+        this.recursive = recursive;
+        this.exclude = exclude;
     }
 
     public List<File> search(String[] aStartDirs) throws IOException {
         List<File> files;
-        FilenameFilter fnf = new ExtFileNameFilter(this.exts);
-        if (bRecursive) {
-            ListFileVisitor lfv = new ListFileVisitor(fnf, this.lsExclide);
+        FilenameFilter fnf = new ExtFileNameFilter(this.extensions);
+        if (recursive) {
+            ListFileVisitor lfv = new ListFileVisitor(fnf, this.exclude);
             Set<FileVisitOption> so = new HashSet<>();
             so.add(FileVisitOption.FOLLOW_LINKS);
             for (String startDir : aStartDirs) {

@@ -7,22 +7,22 @@ import java.util.List;
 
 public class DuplicateDeleteSoluter {
 
-    private final boolean bSaveOnlyOne;
+    private final boolean saveOnlyOne;
     private final List<Rule> rules = new ArrayList<>();
-    private final List<String> lSavePrefer = new ArrayList<>();
-    private final List<String> lNoDelete = new ArrayList<>();
+    private final List<String> savePrefer = new ArrayList<>();
+    private final List<String> doNotDelete = new ArrayList<>();
 
-    public CheckedFile[] sol(File[] dups) {
-        int n = dups.length;
+    public CheckedFile[] sol(File[] duplicates) {
+        int n = duplicates.length;
         if (n == 0) {
             return null;
         }
         CheckedFile[] result = new CheckedFile[n];
         for (int i = 0; i < n; i++) {
-            result[i] = new CheckedFile(dups[i]);
+            result[i] = new CheckedFile(duplicates[i]);
         }
-        if (!this.lSavePrefer.isEmpty()) {
-            for (String dir : this.lSavePrefer) {
+        if (!this.savePrefer.isEmpty()) {
+            for (String dir : this.savePrefer) {
                 boolean[] bPrefer = new boolean[result.length];
                 boolean bOnePrefer = false;
                 for (int i = 0; i < result.length; i++) {
@@ -32,7 +32,7 @@ public class DuplicateDeleteSoluter {
                 }
                 if (bOnePrefer) {
                     for (int i = 0; i < result.length; i++) {
-                        result[i].del = !bPrefer[i];
+                        result[i].delete = !bPrefer[i];
                     }
                     break;
                 }
@@ -44,7 +44,7 @@ public class DuplicateDeleteSoluter {
             int valueMax = Integer.MIN_VALUE;
             int valueMin = Integer.MAX_VALUE;
             for (CheckedFile cf : result) {
-                if (cf.del) {
+                if (cf.delete) {
                     continue;
                 }
                 int valueParam = cf.params.get(param);
@@ -60,13 +60,13 @@ public class DuplicateDeleteSoluter {
                 int delCnt = 0;
                 boolean bEnd = false;
                 for (CheckedFile cf : result) {
-                    if (cf.del) {
+                    if (cf.delete) {
                         delCnt++;
                         continue;
                     }
                     if (cf.params.get(param) != saveValue) {
                         if (result.length - delCnt > 1) {
-                            cf.del = true;
+                            cf.delete = true;
                             delCnt++;
                         } else {
                             bEnd = true;
@@ -81,8 +81,8 @@ public class DuplicateDeleteSoluter {
         }
         boolean[] bCanDel = new boolean[result.length];
         Arrays.fill(bCanDel, true);
-        if (!this.lNoDelete.isEmpty()) {
-            for (String dir : this.lNoDelete) {
+        if (!this.doNotDelete.isEmpty()) {
+            for (String dir : this.doNotDelete) {
                 for (int i = 0; i < result.length; i++) {
                     bCanDel[i] = !result[i].cacheAbsolutePath.startsWith(dir);
                 }
@@ -90,18 +90,18 @@ public class DuplicateDeleteSoluter {
         }
         for (int i = 0; i < result.length; i++) {
             if (!bCanDel[i]) {
-                result[i].del = false;
+                result[i].delete = false;
             }
         }
-        if (this.bSaveOnlyOne) {
+        if (this.saveOnlyOne) {
             boolean bSaved = false;
             for (int i = 0; i < result.length; i++) {
                 CheckedFile cf = result[i];
-                if (cf.del) {
+                if (cf.delete) {
                     continue;
                 }
                 if (bSaved && bCanDel[i]) {
-                    cf.del = true;
+                    cf.delete = true;
                 } else {
                     bSaved = true;
                 }
@@ -110,13 +110,13 @@ public class DuplicateDeleteSoluter {
         //additional final control
         boolean atLeastOneSave = false;
         for (CheckedFile cf : result) {
-            if (!cf.del) {
+            if (!cf.delete) {
                 atLeastOneSave = true;
                 break;
             }
         }
         if (!atLeastOneSave) {
-            result[0].del = false;
+            result[0].delete = false;
         }
         return result;
     }
@@ -125,20 +125,20 @@ public class DuplicateDeleteSoluter {
         this(lSaveRules, false);
     }
 
-    public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean bSaveOnlyOne) {
-        this(lSaveRules, bSaveOnlyOne, null, null);
+    public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean saveOnlyOne) {
+        this(lSaveRules, saveOnlyOne, null, null);
     }
 
-    public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean bSaveOnlyOne, List<String> lSavePrefer, List<String> lNoDelete) {
+    public DuplicateDeleteSoluter(List<Rule> lSaveRules, boolean saveOnlyOne, List<String> savePrefer, List<String> doNotDelete) {
         if (lSaveRules != null) {
             this.rules.addAll(lSaveRules);
         }
-        this.bSaveOnlyOne = bSaveOnlyOne;
-        if (lSavePrefer != null) {
-            this.lSavePrefer.addAll(lSavePrefer);
+        this.saveOnlyOne = saveOnlyOne;
+        if (savePrefer != null) {
+            this.savePrefer.addAll(savePrefer);
         }
-        if (lNoDelete != null) {
-            this.lNoDelete.addAll(lNoDelete);
+        if (doNotDelete != null) {
+            this.doNotDelete.addAll(doNotDelete);
         }
     }
 }

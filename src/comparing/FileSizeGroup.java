@@ -38,13 +38,13 @@ public class FileSizeGroup {
     public List<File[]> getGroups() throws IOException {
         List<File[]> result = new ArrayList<>();
         while (!this.stack.empty()) {
-            try (FileInReadingGroup frg = this.stack.pop()) {
-                while ((frg.count() > 1) && frg.read()) {
-                    for (FileInReadingGroup gr : frg.separateDiff()) {
+            try (FileInReadingGroup readingGroup = this.stack.pop()) {
+                while ((readingGroup.count() > 1) && readingGroup.read()) {
+                    for (FileInReadingGroup gr : readingGroup.separateDiff()) {
                         stack.push(gr);
                     }
                 }
-                result.add(frg.fiels());
+                result.add(readingGroup.fiels());
             }
         }
         return result;

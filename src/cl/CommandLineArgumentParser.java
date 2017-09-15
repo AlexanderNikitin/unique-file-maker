@@ -6,13 +6,13 @@ public class CommandLineArgumentParser {
 
     private final Map<Character, Option> indexByShortName;
     private final Map<String, Option> indexByName;
-    private final boolean bEscape;
+    private final boolean escape;
 
     public CommandLineArgumentParser(List<Option> options) throws Exception {
         this(options, false);
     }
 
-    public CommandLineArgumentParser(List<Option> options, boolean bEscape) throws Exception {
+    public CommandLineArgumentParser(List<Option> options, boolean escape) throws Exception {
         this.indexByShortName = new LinkedHashMap<>();
         this.indexByName = new LinkedHashMap<>();
         for (Option opt : options) {
@@ -22,7 +22,7 @@ public class CommandLineArgumentParser {
             this.indexByShortName.put(opt.shortName, opt);
             this.indexByName.put(opt.name, opt);
         }
-        this.bEscape = bEscape;
+        this.escape = escape;
     }
 
     public CommandLineArgumentParseResult parse(String[] args) throws Exception {
@@ -48,7 +48,7 @@ public class CommandLineArgumentParser {
                         bThisIsArgument = false;
                         continue;
                     }
-                    if (this.bEscape && c == '\\') {
+                    if (this.escape && c == '\\') {
                         bEscapedArgument = true;
                         continue;
                     }

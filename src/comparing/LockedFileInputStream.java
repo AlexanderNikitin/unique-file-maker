@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import static java.nio.channels.FileChannel.open;
 import static java.nio.file.StandardOpenOption.READ;
 
-public class LockFileInputStream implements Closeable {
+public class LockedFileInputStream implements Closeable {
 
     private final FileChannel fc;
 
@@ -18,11 +18,11 @@ public class LockFileInputStream implements Closeable {
         return this.fc.size();
     }
 
-    public LockFileInputStream(File file) throws IOException {
+    public LockedFileInputStream(File file) throws IOException {
         this(file.toPath());
     }
 
-    public LockFileInputStream(Path path) throws IOException {
+    public LockedFileInputStream(Path path) throws IOException {
         //this.fc = open(path, READ, ExtendedOpenOption.NOSHARE_DELETE, ExtendedOpenOption.NOSHARE_WRITE);
         this.fc = open(path, READ);
     }

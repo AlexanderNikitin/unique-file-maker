@@ -8,10 +8,10 @@ import java.util.*;
 
 public class FileComparer {
 
-    private final boolean bDiffByExt;
+    private final boolean diffByExt;
     private final boolean bNeedCheck;
 
-    private final Map<Long, List<File[]>> dupsGroups = new HashMap<>();
+    private final Map<Long, List<File[]>> duplicationsGroups = new HashMap<>();
 
     private Map<Long, List<File>> group(List<File> files) {
         System.out.println("Grouping...");
@@ -42,7 +42,7 @@ public class FileComparer {
         for (Map.Entry<Long, List<File>> eOneSize : hmSizeGrouping.entrySet()) {
             List<File> lOneSize = eOneSize.getValue();
             if (lOneSize.size() > 1) {
-                if (this.bDiffByExt) {
+                if (this.diffByExt) {
                     Map<String, List<File>> mGroupedByExt = new HashMap<>();
                     lOneSize.stream().forEach(file -> {
                         String ext = getFileExtensionByName(file.getName());
@@ -60,9 +60,9 @@ public class FileComparer {
                             groups.addAll(new FileSizeGroup(filesByExt).getGroups());
                         }
                     }
-                    this.dupsGroups.put(eOneSize.getKey(), groups);
+                    this.duplicationsGroups.put(eOneSize.getKey(), groups);
                 } else {
-                    this.dupsGroups.put(eOneSize.getKey(), new FileSizeGroup(lOneSize).getGroups());
+                    this.duplicationsGroups.put(eOneSize.getKey(), new FileSizeGroup(lOneSize).getGroups());
                 }
             }
         }
@@ -72,7 +72,7 @@ public class FileComparer {
     private boolean check() throws NoSuchAlgorithmException {
         System.out.println("Checking...");
         long allSize = 0;
-        for (Map.Entry<Long, List<File[]>> arFileOneSize : this.dupsGroups.entrySet()) {
+        for (Map.Entry<Long, List<File[]>> arFileOneSize : this.duplicationsGroups.entrySet()) {
             List<File[]> dupGruops = arFileOneSize.getValue();
             long groupSize = arFileOneSize.getKey();
             for (File[] dups : dupGruops) {
@@ -91,7 +91,7 @@ public class FileComparer {
         long curSize = 0;
         long oldPercent = -1;
         MessageDigest md = MessageDigest.getInstance("MD5");
-        for (Map.Entry<Long, List<File[]>> arFileOneSize : this.dupsGroups.entrySet()) {
+        for (Map.Entry<Long, List<File[]>> arFileOneSize : this.duplicationsGroups.entrySet()) {
             List<File[]> dupGruops = arFileOneSize.getValue();
             if (dupGruops.isEmpty()) {
                 continue;
@@ -149,8 +149,8 @@ public class FileComparer {
         return errGrCnt == 0;
     }
 
-    public FileComparer(boolean bDiffByExt, boolean bNeedCheck) {
-        this.bDiffByExt = bDiffByExt;
+    public FileComparer(boolean diffByExt, boolean bNeedCheck) {
+        this.diffByExt = diffByExt;
         this.bNeedCheck = bNeedCheck;
     }
 
@@ -160,6 +160,6 @@ public class FileComparer {
     }
 
     public Map<Long, List<File[]>> getResult() {
-        return this.dupsGroups;
+        return this.duplicationsGroups;
     }
 }
