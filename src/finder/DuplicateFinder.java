@@ -5,6 +5,7 @@ import cl.Option;
 import comparing.FileComparer;
 import deleting.*;
 import fs.FileSearcher;
+import utils.Log;
 import utils.Utils;
 
 import java.io.File;
