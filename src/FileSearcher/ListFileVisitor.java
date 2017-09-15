@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 public class ListFileVisitor extends SimpleFileVisitor<Path> {
 
@@ -63,10 +63,7 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
         this.skipPatternDir = new ArrayList<>();
         int flags = Pattern.CASE_INSENSITIVE;
         char sch = File.separatorChar;
-        String separator = Character.toString(sch);
-        if (sch == '\\') {
-            separator = '\\' + separator;
-        }
+        String separator = (sch == '\\') ? String.format("%c%c", sch, sch) : Character.toString(sch);
         this.skipPatternDir.add(Pattern.compile(separator + "backup_\\d+$", flags));
         this.skipPatternDir.add(Pattern.compile("_files$", flags));
         this.skipPatternDir.add(Pattern.compile("\\$RECYCLE\\.BIN", flags));

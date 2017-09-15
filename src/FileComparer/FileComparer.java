@@ -1,18 +1,10 @@
 package FileComparer;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FileComparer {
 
@@ -112,7 +104,8 @@ public class FileComparer {
                     for (int i = 0; i < n; i++) {
                         File dup = dups[i];
                         try (DigestInputStream dis = new DigestInputStream(new BufferedInputStream(new FileInputStream(dup.getPath())), md)) {
-                            while (dis.read() != -1);
+                            while (dis.read() != -1) {
+                            }
                         } catch (FileNotFoundException e) {
                             System.err.println(e.getMessage());
                         } catch (IOException e) {

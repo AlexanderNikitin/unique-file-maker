@@ -1,13 +1,13 @@
 package FileComparer;
 
-//import com.sun.nio.file.ExtendedOpenOption;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import static java.nio.channels.FileChannel.open;
 import java.nio.file.Path;
+
+import static java.nio.channels.FileChannel.open;
 import static java.nio.file.StandardOpenOption.READ;
 
 public class LockFileInputStream implements Closeable {

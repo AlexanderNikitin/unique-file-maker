@@ -1,6 +1,7 @@
 package DuplicateFinder;
 
-import java.io.*;
+import java.io.File;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 

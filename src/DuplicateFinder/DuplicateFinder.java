@@ -1,13 +1,11 @@
 package DuplicateFinder;
 
-import CommandLineArguments.*;
+import CommandLineArguments.CommandLineArgumentParser;
+import CommandLineArguments.Option;
 import FileComparer.FileComparer;
+import FileDeleter.*;
 import FileSearcher.FileSearcher;
-import FileDeleter.CheckedFile;
-import FileDeleter.DuplicateDeleteSoluter;
-import FileDeleter.Rule;
-import FileDeleter.FileDeleter;
-import FileDeleter.Param;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -188,13 +186,11 @@ public class DuplicateFinder {
             DuplicateDeleteSoluter dds = new DuplicateDeleteSoluter(lSaveRules, bSaveOnlyOne, lSavePrefer, lNoDelete);
 
             List<CheckedFile[]> deletePreparation = new ArrayList<>();
-            compare.values().stream().forEach(groups -> {
-                groups.stream()
-                        .filter(grup -> grup.length > 1)
-                        .map(group -> dds.sol(group))
-                        .filter(group -> group != null)
-                        .forEach(group -> deletePreparation.add(group));
-            });
+            compare.values().stream().forEach(groups -> groups.stream()
+                    .filter(group -> group.length > 1)
+                    .map(group -> dds.sol(group))
+                    .filter(group -> group != null)
+                    .forEach(group -> deletePreparation.add(group)));
             long delSize = 0;
             for (CheckedFile[] group : deletePreparation) {
                 for (CheckedFile cf : group) {

@@ -1,7 +1,8 @@
 package FileDeleter;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FileDeleter {
 
