@@ -2,32 +2,34 @@ package utils;
 
 public abstract class Utils {
 
+    private static final long BYTE_IN_KB = 1024;
+
     public static String getHumanDataSize(long speedByte) {
-        long byteInKb = 1024;
-        long byteInMb = byteInKb * byteInKb;
-        long byteInGb = byteInMb * byteInKb;
+
+        long byteInMb = BYTE_IN_KB * BYTE_IN_KB;
+        long byteInGb = byteInMb * BYTE_IN_KB;
         if (speedByte >= byteInGb) {
             return (speedByte / byteInGb) + " GB";
         }
         if (speedByte >= byteInMb) {
             return (speedByte / byteInMb) + " MB";
         }
-        if (speedByte >= byteInKb) {
-            return (speedByte / byteInKb) + " KB";
+        if (speedByte >= BYTE_IN_KB) {
+            return (speedByte / BYTE_IN_KB) + " KB";
         }
         return speedByte + " B";
     }
 
-    public static String strRepeat(String s, int c) {
-        if (s == null) {
+    public static String repeatString(String string, int count) {
+        if (string == null) {
             return null;
         }
-        if (s.isEmpty() || c <= 0) {
+        if (string.isEmpty() || count <= 0) {
             return "";
         }
-        StringBuilder sb = new StringBuilder(c * s.length());
-        for (int i = 0; i < c; i++) {
-            sb.append(s);
+        StringBuilder sb = new StringBuilder(count * string.length());
+        for (int i = 0; i < count; i++) {
+            sb.append(string);
         }
         return sb.toString();
     }

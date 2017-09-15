@@ -18,12 +18,12 @@ public class DuplicateFinder {
     private static void print(Map<Long, List<File[]>> dupsGroups) {
         dupsGroups.entrySet().stream().forEach(arFileOneSize -> {
             System.out.println(arFileOneSize.getKey());
-            System.out.println(Utils.strRepeat("-", 50));
+            System.out.println(Utils.repeatString("-", 50));
             arFileOneSize.getValue().stream().filter(dups -> dups.length > 1).forEach(dups -> {
                 for (File dup : dups) {
                     System.out.println(dup.toString());
                 }
-                System.out.println(Utils.strRepeat("-", 50));
+                System.out.println(Utils.repeatString("-", 50));
             });
         });
     }
@@ -171,7 +171,7 @@ public class DuplicateFinder {
                         delSize += cf.file.length();
                     }
                 }
-                log.log(Utils.strRepeat("-", 100));
+                log.log(Utils.repeatString("-", 100));
             }
             log.log("Delete size: " + Utils.getHumanDataSize(delSize));
             if (bDel) {
