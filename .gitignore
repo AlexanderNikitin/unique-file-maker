@@ -3,7 +3,7 @@
 *.iml
 *.class
 *.html
-*.xml
 1.txt
 META-INF/
 out/
+*.properties
