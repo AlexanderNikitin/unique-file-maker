@@ -1,4 +1,4 @@
-package FileComparer;
+package comparing;
 
 import java.io.Closeable;
 import java.io.File;
