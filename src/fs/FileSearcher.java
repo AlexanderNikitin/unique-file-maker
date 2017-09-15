@@ -26,25 +26,28 @@ public class FileSearcher {
 
     public List<File> search(String[] aStartDirs) throws IOException {
         List<File> files;
-        FilenameFilter fnf = new ExtFileNameFilter(this.extensions);
+        FilenameFilter filenameFilter = new ExtFileNameFilter(this.extensions);
         if (recursive) {
-            ListFileVisitor lfv = new ListFileVisitor(fnf, this.exclude);
+            ListFileVisitor fileVisitor = new ListFileVisitor(filenameFilter, this.exclude);
             Set<FileVisitOption> so = new HashSet<>();
             so.add(FileVisitOption.FOLLOW_LINKS);
             for (String startDir : aStartDirs) {
                 System.out.println(startDir);
                 try {
-                    Files.walkFileTree(new File(startDir).toPath().toRealPath(LinkOption.NOFOLLOW_LINKS), so, Integer.MAX_VALUE, lfv);
+                    Files.walkFileTree(new File(startDir).toPath().toRealPath(LinkOption.NOFOLLOW_LINKS), so, Integer.MAX_VALUE, fileVisitor);
                 } catch (FileSystemException e) {
                     System.out.println("FileSystemException: " + e.getFile());
                 }
             }
-            files = lfv.files;
+            files = fileVisitor.files;
         } else {
             files = new ArrayList<>();
             for (String startDir : aStartDirs) {
                 System.out.println(startDir);
-                File[] foundFiles = new File(startDir).listFiles(fnf);
+                File[] foundFiles = new File(startDir).listFiles(filenameFilter);
+                if (foundFiles == null) {
+                    continue;
+                }
                 for (File file : foundFiles) {
                     if (file.isFile()) {
                         files.add(file);
