@@ -5,6 +5,7 @@ import CommandLineArguments.Option;
 import FileComparer.FileComparer;
 import FileDeleter.*;
 import FileSearcher.FileSearcher;
+import utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,47 +14,17 @@ import java.util.Map;
 
 public class DuplicateFinder {
 
-    private static String str_repeat_optimal(String s, int c) {
-        if (s == null) {
-            return null;
-        }
-        if (s.isEmpty() || c <= 0) {
-            return "";
-        }
-        StringBuilder sb = new StringBuilder(c * s.length());
-        for (int i = 0; i < c; i++) {
-            sb.append(s);
-        }
-        return sb.toString();
-    }
-
     private static void print(Map<Long, List<File[]>> dupsGroups) {
         dupsGroups.entrySet().stream().forEach(arFileOneSize -> {
             System.out.println(arFileOneSize.getKey());
-            System.out.println(str_repeat_optimal("-", 50));
+            System.out.println(Utils.strRepeat("-", 50));
             arFileOneSize.getValue().stream().filter(dups -> dups.length > 1).forEach(dups -> {
                 for (File dup : dups) {
                     System.out.println(dup.toString());
                 }
-                System.out.println(str_repeat_optimal("-", 50));
+                System.out.println(Utils.strRepeat("-", 50));
             });
         });
-    }
-
-    private static String getHumanBytes(long speedByte) {
-        long byteInKb = 1024;
-        long byteInMb = byteInKb * byteInKb;
-        long byteInGb = byteInMb * byteInKb;
-        if (speedByte >= byteInGb) {
-            return (speedByte / byteInGb) + " GB";
-        }
-        if (speedByte >= byteInMb) {
-            return (speedByte / byteInMb) + " MB";
-        }
-        if (speedByte >= byteInKb) {
-            return (speedByte / byteInKb) + " KB";
-        }
-        return speedByte + " B";
     }
 
     public static void main(String[] args) throws Exception {
@@ -199,9 +170,9 @@ public class DuplicateFinder {
                         delSize += cf.file.length();
                     }
                 }
-                log.log(str_repeat_optimal("-", 100));
+                log.log(Utils.strRepeat("-", 100));
             }
-            log.log("Delete size: " + getHumanBytes(delSize));
+            log.log("Delete size: " + Utils.getHumanDataSize(delSize));
             if (bDel) {
                 FileDeleter fd = new FileDeleter();
                 int cnt = 0;
