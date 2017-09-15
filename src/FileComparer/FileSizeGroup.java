@@ -8,7 +8,7 @@ import java.util.Stack;
 
 public class FileSizeGroup {
 
-    private final Stack<FileInRedingGroup> stack = new Stack<>();
+    private final Stack<FileInReadingGroup> stack = new Stack<>();
 
     public FileSizeGroup(List<File> files) {
         if (files != null && !files.isEmpty()) {
@@ -27,7 +27,7 @@ public class FileSizeGroup {
                 }
             }
             try {
-                this.stack.push(FileInRedingGroup.initFromFiles(filtered));
+                this.stack.push(FileInReadingGroup.initFromFiles(filtered));
             } catch (Exception e) {
                 System.err.println(e.toString());
                 System.err.println(e.getMessage());
@@ -38,9 +38,9 @@ public class FileSizeGroup {
     public List<File[]> getGroups() throws IOException {
         List<File[]> result = new ArrayList<>();
         while (!this.stack.empty()) {
-            try (FileInRedingGroup frg = this.stack.pop()) {
+            try (FileInReadingGroup frg = this.stack.pop()) {
                 while ((frg.count() > 1) && frg.read()) {
-                    for (FileInRedingGroup gr : frg.separateDiff()) {
+                    for (FileInReadingGroup gr : frg.separateDiff()) {
                         stack.push(gr);
                     }
                 }
