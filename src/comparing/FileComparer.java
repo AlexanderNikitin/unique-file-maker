@@ -9,7 +9,7 @@ import java.util.*;
 public class FileComparer {
 
     private final boolean diffByExt;
-    private final boolean bNeedCheck;
+    private final boolean needCheck;
 
     private final Map<Long, List<File[]>> duplicationsGroups = new HashMap<>();
 
@@ -149,14 +149,14 @@ public class FileComparer {
         return errGrCnt == 0;
     }
 
-    public FileComparer(boolean diffByExt, boolean bNeedCheck) {
+    public FileComparer(boolean diffByExt, boolean needCheck) {
         this.diffByExt = diffByExt;
-        this.bNeedCheck = bNeedCheck;
+        this.needCheck = needCheck;
     }
 
     public boolean compare(List<File> files) throws IOException, NoSuchAlgorithmException {
         this.compare(this.group(files));
-        return (this.bNeedCheck && this.check()) || !this.bNeedCheck;
+        return (this.needCheck && this.check()) || !this.needCheck;
     }
 
     public Map<Long, List<File[]>> getResult() {
