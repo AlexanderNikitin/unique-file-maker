@@ -48,7 +48,7 @@ public class DuplicateDeleteSolver {
                 if (checkedFile.delete) {
                     continue;
                 }
-                int valueParam = checkedFile.params.get(parameters);
+                int valueParam = checkedFile.parameterValues.get(parameters);
                 if (valueParam > valueMax) {
                     valueMax = valueParam;
                 }
@@ -65,7 +65,7 @@ public class DuplicateDeleteSolver {
                         deleteCount++;
                         continue;
                     }
-                    if (cf.params.get(parameters) != saveValue) {
+                    if (cf.parameterValues.get(parameters) != saveValue) {
                         if (result.length - deleteCount > 1) {
                             cf.delete = true;
                             deleteCount++;

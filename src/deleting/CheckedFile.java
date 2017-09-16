@@ -7,63 +7,43 @@ import java.util.regex.Pattern;
 
 public class CheckedFile {
 
+    private static final Pattern IS_COPY_PATTERN = Pattern.compile("\\s\\(\\d{0,3}\\)(\\.[^\\.]+){0,1}$");
+
     public final File file;
     public boolean delete;
 
-    public final int DIRECTORY_DEPTH;
-    public final int FILENAME_LENGTH;
-    public final int PATH_LENGTH;
-    public final int IS_COPY;
-    public final int IS_ENGLISH_FILE_NAME;
-
     public final String cacheAbsolutePath;
 
-    public final Map<Parameters, Integer> params;
+    final Map<Parameters, Integer> parameterValues;
 
-    public CheckedFile(File file) {
+    CheckedFile(File file) {
         this.file = file;
         this.delete = false;
 
         String sFileName = file.getName();
-        Pattern pattern = Pattern.compile("\\s\\(\\d{0,3}\\)(\\.[^\\.]+){0,1}$");
 
-        boolean bIsEng = true;
+        boolean isEnglishName = true;
         for (int i = 0; i < sFileName.length(); i++) {
             if ((int) sFileName.charAt(i) > 127) {
-                bIsEng = false;
+                isEnglishName = false;
                 break;
             }
         }
 
         int slashCnt = 0;
-        String sAbsPath = file.getAbsolutePath();
-        for (int j = 0; j < sAbsPath.length(); j++) {
-            if (sAbsPath.charAt(j) == File.separatorChar) {
+        String absPath = file.getAbsolutePath();
+        for (int j = 0; j < absPath.length(); j++) {
+            if (absPath.charAt(j) == File.separatorChar) {
                 slashCnt++;
             }
         }
 
-        this.IS_COPY = pattern.matcher(sFileName).find() ? 1 : 0;
-        this.IS_ENGLISH_FILE_NAME = bIsEng ? 1 : 0;
-        this.DIRECTORY_DEPTH = slashCnt;
-        this.FILENAME_LENGTH = sFileName.length();
-        this.PATH_LENGTH = sAbsPath.length();
-
-        this.params = new EnumMap<>(Parameters.class);
-
-        /*DuplicateDeleteSolver.Parameters[] ps = DuplicateDeleteSolver.Parameters.values();
-         for (DuplicateDeleteSolver.Parameters p : ps) {
-         try {
-         this.params.put(p, this.getClass().getField(p.name()).getInt(this));
-         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-         Logger.getLogger(CheckedFile.class.getName()).log(Level.SEVERE, null, ex);
-         }
-         }*/
-        this.params.put(Parameters.IS_ENGLISH_FILE_NAME, this.IS_ENGLISH_FILE_NAME);
-        this.params.put(Parameters.IS_COPY, this.IS_COPY);
-        this.params.put(Parameters.DIRECTORY_DEPTH, this.DIRECTORY_DEPTH);
-        this.params.put(Parameters.FILENAME_LENGTH, this.FILENAME_LENGTH);
-        this.params.put(Parameters.PATH_LENGTH, this.PATH_LENGTH);
+        this.parameterValues = new EnumMap<>(Parameters.class);
+        this.parameterValues.put(Parameters.IS_ENGLISH_FILE_NAME, isEnglishName ? 1 : 0);
+        this.parameterValues.put(Parameters.IS_COPY, IS_COPY_PATTERN.matcher(sFileName).find() ? 1 : 0);
+        this.parameterValues.put(Parameters.DIRECTORY_DEPTH, slashCnt);
+        this.parameterValues.put(Parameters.FILENAME_LENGTH, sFileName.length());
+        this.parameterValues.put(Parameters.PATH_LENGTH, absPath.length());
 
         this.cacheAbsolutePath = this.file.getAbsolutePath();
     }
