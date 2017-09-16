@@ -67,8 +67,9 @@ public final class FileInReadingGroup implements Closeable {
 
     public List<FileInReadingGroup> separateDiff() {
         int n = this.reading.size();
+        List<FileInReadingGroup> result = new ArrayList<>();
         if (n < 2) {
-            return null;
+            return result;
         }
         Map<ByteBuffer, List<FileInReading>> grouper = new HashMap<>();
         for (FileInReading rf : this.reading) {
@@ -82,7 +83,6 @@ public final class FileInReadingGroup implements Closeable {
             curList.add(rf);
         }
         this.reading = null;
-        List<FileInReadingGroup> result = new ArrayList<>();
         for (List<FileInReading> l : grouper.values()) {
             if (this.reading == null) {
                 this.reading = l;
