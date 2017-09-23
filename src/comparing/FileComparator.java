@@ -6,7 +6,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class FileComparer {
+public class FileComparator {
 
     private final boolean diffByExt;
     private final boolean needCheck;
@@ -97,17 +97,15 @@ public class FileComparer {
                 continue;
             }
             long groupSize = arFileOneSize.getKey();
-            for (File[] dups : dupGruops) {
-                int n = dups.length;
+            for (File[] duplicates : dupGruops) {
+                int n = duplicates.length;
                 if (n > 1) {
                     byte[][] d = new byte[n][];
                     for (int i = 0; i < n; i++) {
-                        File dup = dups[i];
+                        File dup = duplicates[i];
                         try (DigestInputStream dis = new DigestInputStream(new BufferedInputStream(new FileInputStream(dup.getPath())), md)) {
                             while (dis.read() != -1) {
                             }
-                        } catch (FileNotFoundException e) {
-                            System.err.println(e.getMessage());
                         } catch (IOException e) {
                             System.err.println(e.getMessage());
                         }
@@ -116,12 +114,12 @@ public class FileComparer {
                     boolean bErr = false;
                     for (int i = 1; i < d.length; i++) {
                         if (!Arrays.equals(d[0], d[i])) {
-                            System.out.println(dups[i].toString());
+                            System.out.println(duplicates[i].toString());
                             bErr = true;
                         }
                     }
                     if (bErr) {
-                        System.out.println("Default: " + dups[0].toString());
+                        System.out.println("Default: " + duplicates[0].toString());
                         System.out.println();
                         errGrCnt++;
                     }
@@ -149,14 +147,14 @@ public class FileComparer {
         return errGrCnt == 0;
     }
 
-    public FileComparer(boolean diffByExt, boolean needCheck) {
+    public FileComparator(boolean diffByExt, boolean needCheck) {
         this.diffByExt = diffByExt;
         this.needCheck = needCheck;
     }
 
     public boolean compare(List<File> files) throws IOException, NoSuchAlgorithmException {
         this.compare(this.group(files));
-        return (this.needCheck && this.check()) || !this.needCheck;
+        return !this.needCheck || this.check();
     }
 
     public Map<Long, List<File[]>> getResult() {

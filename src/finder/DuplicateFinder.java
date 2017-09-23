@@ -2,7 +2,7 @@ package finder;
 
 import cl.CommandLineArgumentParser;
 import cl.Option;
-import comparing.FileComparer;
+import comparing.FileComparator;
 import deleting.*;
 import fs.FileSearcher;
 import utils.Log;
@@ -141,10 +141,10 @@ public class DuplicateFinder {
 
         System.out.println("All found files: " + files.size());
 
-        FileComparer fileComparer = new FileComparer(bDiffByExt, bNeedCheck);
+        FileComparator fileComparator = new FileComparator(bDiffByExt, bNeedCheck);
 
-        if (fileComparer.compare(files)) {
-            Map<Long, List<File[]>> compare = fileComparer.getResult();
+        if (fileComparator.compare(files)) {
+            Map<Long, List<File[]>> compare = fileComparator.getResult();
             //print(compare);
 
             List<Rule> lSaveRules = new ArrayList<>();
