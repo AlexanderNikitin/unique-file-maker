@@ -3,13 +3,12 @@ package utils;
 public abstract class Utils {
 
     public static final boolean IS_WINDOWS;
+    private static final long BYTE_IN_KB = 1024;
 
     static {
         String os = System.getProperty("os.name").toLowerCase();
         IS_WINDOWS = os.contains("win");
     }
-
-    private static final long BYTE_IN_KB = 1024;
 
     public static String getHumanDataSize(long speedByte) {
 

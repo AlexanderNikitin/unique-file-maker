@@ -10,11 +10,9 @@ public class CheckedFile {
     private static final Pattern IS_COPY_PATTERN = Pattern.compile("\\s\\(\\d{0,3}\\)(\\.[^\\.]+){0,1}$");
 
     public final File file;
-    public boolean delete;
-
     public final String cacheAbsolutePath;
-
     final Map<Parameters, Integer> parameterValues;
+    public boolean delete;
 
     CheckedFile(File file) {
         this.file = file;

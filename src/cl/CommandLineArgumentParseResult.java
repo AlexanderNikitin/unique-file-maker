@@ -9,17 +9,17 @@ public class CommandLineArgumentParseResult {
     private final Option[] options;
     private Map<String, Option> map;
 
+    public CommandLineArgumentParseResult(Option[] options, String[] operands) {
+        this.operands = operands;
+        this.options = options;
+    }
+
     public String[] getOperands() {
         return this.operands;
     }
 
     public Option[] getOptions() {
         return this.options;
-    }
-
-    public CommandLineArgumentParseResult(Option[] options, String[] operands) {
-        this.operands = operands;
-        this.options = options;
     }
 
     public Map<String, Option> mapOptions() throws Exception {

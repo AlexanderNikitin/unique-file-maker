@@ -17,10 +17,6 @@ public class LockedFileInputStream implements Closeable {
 
     private final FileChannel fileChannel;
 
-    public long getLength() throws IOException {
-        return this.fileChannel.size();
-    }
-
     public LockedFileInputStream(File file) throws IOException {
         this(file.toPath());
     }
@@ -29,6 +25,10 @@ public class LockedFileInputStream implements Closeable {
         this.fileChannel = Utils.IS_WINDOWS ?
                 open(path, READ, ExtendedOpenOption.NOSHARE_DELETE, ExtendedOpenOption.NOSHARE_WRITE) :
                 open(path, READ);
+    }
+
+    public long getLength() throws IOException {
+        return this.fileChannel.size();
     }
 
     public int read(ByteBuffer buffer) throws IOException {

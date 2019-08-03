@@ -12,6 +12,19 @@ public class DuplicateDeleteSolver {
     private final List<String> savePreferDirectories = new ArrayList<>();
     private final List<String> doNotDeleteDirectories = new ArrayList<>();
 
+    public DuplicateDeleteSolver(List<Rule> saveRules, boolean saveOnlyOne, List<String> savePreferDirectories, List<String> doNotDeleteDirectories) {
+        if (saveRules != null) {
+            this.rules.addAll(saveRules);
+        }
+        this.saveOnlyOne = saveOnlyOne;
+        if (savePreferDirectories != null) {
+            this.savePreferDirectories.addAll(savePreferDirectories);
+        }
+        if (doNotDeleteDirectories != null) {
+            this.doNotDeleteDirectories.addAll(doNotDeleteDirectories);
+        }
+    }
+
     public CheckedFile[] solve(File[] duplicates) {
         if (duplicates == null) {
             return null;
@@ -120,18 +133,5 @@ public class DuplicateDeleteSolver {
             result[0].delete = false;
         }
         return result;
-    }
-
-    public DuplicateDeleteSolver(List<Rule> saveRules, boolean saveOnlyOne, List<String> savePreferDirectories, List<String> doNotDeleteDirectories) {
-        if (saveRules != null) {
-            this.rules.addAll(saveRules);
-        }
-        this.saveOnlyOne = saveOnlyOne;
-        if (savePreferDirectories != null) {
-            this.savePreferDirectories.addAll(savePreferDirectories);
-        }
-        if (doNotDeleteDirectories != null) {
-            this.doNotDeleteDirectories.addAll(doNotDeleteDirectories);
-        }
     }
 }

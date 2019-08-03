@@ -1,6 +1,9 @@
 package comparing;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -12,6 +15,11 @@ public class FileComparator {
     private final boolean needCheck;
 
     private final Map<Long, List<File[]>> duplicationsGroups = new HashMap<>();
+
+    public FileComparator(boolean diffByExt, boolean needCheck) {
+        this.diffByExt = diffByExt;
+        this.needCheck = needCheck;
+    }
 
     private Map<Long, List<File>> group(List<File> files) {
         System.out.println("Grouping...");
@@ -145,11 +153,6 @@ public class FileComparator {
         }
         System.out.println("All errord groups: " + errGrCnt);
         return errGrCnt == 0;
-    }
-
-    public FileComparator(boolean diffByExt, boolean needCheck) {
-        this.diffByExt = diffByExt;
-        this.needCheck = needCheck;
     }
 
     public boolean compare(List<File> files) throws IOException, NoSuchAlgorithmException {

@@ -13,6 +13,11 @@ public final class FileInReadingGroup implements Closeable {
 
     private List<FileInReading> reading;
 
+    private FileInReadingGroup(List<FileInReading> files) {
+        this.reading = new ArrayList<>();
+        this.reading.addAll(files);
+    }
+
     public static FileInReadingGroup initFromFiles(List<File> files) throws Exception {
         List<FileInReading> alReading = new ArrayList<>();
         long size = -1;
@@ -45,11 +50,6 @@ public final class FileInReadingGroup implements Closeable {
             throw new Exception("Empty reading group!");
         }
         return new FileInReadingGroup(alReading);
-    }
-
-    private FileInReadingGroup(List<FileInReading> files) {
-        this.reading = new ArrayList<>();
-        this.reading.addAll(files);
     }
 
     public int count() {

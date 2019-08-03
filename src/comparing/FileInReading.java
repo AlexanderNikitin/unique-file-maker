@@ -8,10 +8,15 @@ import java.nio.ByteBuffer;
 public class FileInReading implements Closeable {
 
     private static final int BUFFER_SIZE = 1024 * 4;
-
-    private final LockedFileInputStream stream;
     public final ByteBuffer bb;
+    private final LockedFileInputStream stream;
     private final File file;
+
+    public FileInReading(File file) throws IOException {
+        this.file = file;
+        this.stream = new LockedFileInputStream(file);
+        this.bb = ByteBuffer.allocate((int) Math.min(BUFFER_SIZE, this.file.length()));
+    }
 
     public File file() {
         return this.file;
@@ -23,12 +28,6 @@ public class FileInReading implements Closeable {
 
     public ByteBuffer getBuffer() {
         return this.bb.asReadOnlyBuffer();
-    }
-
-    public FileInReading(File file) throws IOException {
-        this.file = file;
-        this.stream = new LockedFileInputStream(file);
-        this.bb = ByteBuffer.allocate((int) Math.min(BUFFER_SIZE, this.file.length()));
     }
 
     public boolean read() throws IOException {

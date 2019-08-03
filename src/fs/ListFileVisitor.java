@@ -25,6 +25,24 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
     private final Set<String> setVisitedDirs;
     private final List<Pattern> skipPatternDir;
 
+    public ListFileVisitor(FilenameFilter filenameFilter, List<String> exclude) {
+        this.filenameFilter = filenameFilter;
+        this.setVisitedDirs = new HashSet<>();
+
+        this.skipPatternDir = new ArrayList<>();
+        this.skipPatternDir.addAll(Arrays.asList(SKIP_ALLWAYS));
+
+        if (exclude != null) {
+            for (String s : exclude) {
+                try {
+                    this.skipPatternDir.add(Pattern.compile(s, FLAGS));
+                } catch (Exception e) {
+                    System.err.println(e.getMessage());
+                }
+            }
+        }
+    }
+
     @Override
     public FileVisitResult preVisitDirectory(Path path, BasicFileAttributes attributes) {
         File file = path.toFile();
@@ -59,23 +77,5 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFileFailed(Path dir, IOException exc) {
         return FileVisitResult.CONTINUE;
-    }
-
-    public ListFileVisitor(FilenameFilter filenameFilter, List<String> exclude) {
-        this.filenameFilter = filenameFilter;
-        this.setVisitedDirs = new HashSet<>();
-
-        this.skipPatternDir = new ArrayList<>();
-        this.skipPatternDir.addAll(Arrays.asList(SKIP_ALLWAYS));
-
-        if (exclude != null) {
-            for (String s : exclude) {
-                try {
-                    this.skipPatternDir.add(Pattern.compile(s, FLAGS));
-                } catch (Exception e) {
-                    System.err.println(e.getMessage());
-                }
-            }
-        }
     }
 }
