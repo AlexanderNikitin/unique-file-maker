@@ -19,7 +19,7 @@ public class FileSizeGroup {
                     if (file.length() == size) {
                         filtered.add(file);
                     } else {
-                        System.out.println("Different size: " + file.toString());
+                        System.out.println("Different size: " + file);
                     }
                 } else {
                     size = file.length();
@@ -29,7 +29,6 @@ public class FileSizeGroup {
             try {
                 this.stack.push(FileInReadingGroup.initFromFiles(filtered));
             } catch (Exception e) {
-                System.err.println(e.toString());
                 System.err.println(e.getMessage());
             }
         }
@@ -44,7 +43,7 @@ public class FileSizeGroup {
                         stack.push(gr);
                     }
                 }
-                result.add(readingGroup.fiels());
+                result.add(readingGroup.files());
             }
         }
         return result;

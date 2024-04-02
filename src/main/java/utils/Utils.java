@@ -33,10 +33,6 @@ public abstract class Utils {
         if (string.isEmpty() || count <= 0) {
             return "";
         }
-        StringBuilder sb = new StringBuilder(count * string.length());
-        for (int i = 0; i < count; i++) {
-            sb.append(string);
-        }
-        return sb.toString();
+        return string.repeat(count);
     }
 }

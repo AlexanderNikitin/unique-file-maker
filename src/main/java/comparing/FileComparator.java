@@ -79,19 +79,7 @@ public class FileComparator {
 
     private boolean check() throws NoSuchAlgorithmException {
         System.out.println("Checking...");
-        long allSize = 0;
-        for (Map.Entry<Long, List<File[]>> arFileOneSize : this.duplicationsGroups.entrySet()) {
-            List<File[]> dupGruops = arFileOneSize.getValue();
-            long groupSize = arFileOneSize.getKey();
-            for (File[] dups : dupGruops) {
-                long n = dups.length;
-                if (n > 1) {
-                    long delta = groupSize * n;
-                    assert (Long.MAX_VALUE - delta) > allSize : delta + " " + allSize;
-                    allSize += delta;
-                }
-            }
-        }
+        long allSize = getAllSize();
         System.out.println("All size: " + allSize);
 
         //long t = System.currentTimeMillis();
@@ -100,12 +88,12 @@ public class FileComparator {
         long oldPercent = -1;
         MessageDigest md = MessageDigest.getInstance("MD5");
         for (Map.Entry<Long, List<File[]>> arFileOneSize : this.duplicationsGroups.entrySet()) {
-            List<File[]> dupGruops = arFileOneSize.getValue();
-            if (dupGruops.isEmpty()) {
+            List<File[]> dupGroups = arFileOneSize.getValue();
+            if (dupGroups.isEmpty()) {
                 continue;
             }
             long groupSize = arFileOneSize.getKey();
-            for (File[] duplicates : dupGruops) {
+            for (File[] duplicates : dupGroups) {
                 int n = duplicates.length;
                 if (n > 1) {
                     byte[][] d = new byte[n][];
@@ -151,8 +139,25 @@ public class FileComparator {
              }
              out.println((speedByte) + " B/s");*/
         }
-        System.out.println("All errord groups: " + errGrCnt);
+        System.out.println("All errored groups: " + errGrCnt);
         return errGrCnt == 0;
+    }
+
+    private long getAllSize() {
+        long allSize = 0;
+        for (Map.Entry<Long, List<File[]>> arFileOneSize : this.duplicationsGroups.entrySet()) {
+            List<File[]> dupGroups = arFileOneSize.getValue();
+            long groupSize = arFileOneSize.getKey();
+            for (File[] dups : dupGroups) {
+                long n = dups.length;
+                if (n > 1) {
+                    long delta = groupSize * n;
+                    assert (Long.MAX_VALUE - delta) > allSize : delta + " " + allSize;
+                    allSize += delta;
+                }
+            }
+        }
+        return allSize;
     }
 
     public boolean compare(List<File> files) throws IOException, NoSuchAlgorithmException {

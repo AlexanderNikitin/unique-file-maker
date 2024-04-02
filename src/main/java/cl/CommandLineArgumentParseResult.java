@@ -4,25 +4,14 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class CommandLineArgumentParseResult {
-
-    private final String[] operands;
     private final Option[] options;
     private Map<String, Option> map;
 
-    public CommandLineArgumentParseResult(Option[] options, String[] operands) {
-        this.operands = operands;
+    public CommandLineArgumentParseResult(Option[] options) {
         this.options = options;
     }
 
-    public String[] getOperands() {
-        return this.operands;
-    }
-
-    public Option[] getOptions() {
-        return this.options;
-    }
-
-    public Map<String, Option> mapOptions() throws Exception {
+    public Map<String, Option> mapOptions() {
         if (this.map == null) {
             this.map = new LinkedHashMap<>();
             for (Option opt : this.options) {

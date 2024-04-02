@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class DuplicateFinder {
 
@@ -46,31 +47,32 @@ public class DuplicateFinder {
         Map<String, Option> opts = new CommandLineArgumentParser(lOptions, true).parse(args).mapOptions();
 
         if (opts.containsKey("help")) {
-            String help = ""
-                    + "--ext, -e <extension[ extension2]>\n"
-                    + "\tOptional. File extension(s) to find.\n"
-                    + "--path, -p <directory[ directory2]>\n"
-                    + "\tOptional. Directories where find files.\n"
-                    + "--recursive, -r\n"
-                    + "\tFind files in subdirectories.\n"
-                    + "--groupbyext, -g\n"
-                    + "\tEquals files, which has not equals extensions, are not duplicates.\n"
-                    + "--saveonlyone, -o\n"
-                    + "\tIf some rules save more than one file in duplicates group, program realy save only random first from saved by reles.\n"
-                    + "--check, -c\n"
-                    + "\tCheck duplicated equality by MD5 algorithm.\n"
-                    + "--delete, -d\n"
-                    + "\tIf this option missing program will not delete files.\n"
-                    + "--exclude, -x\n"
-                    + "\tOptional. Regular expression to exclude directories to scan.\n"
-                    + "--saveprefer, -s <directory1[ directory2]>\n"
-                    + "\tOptional. Priority list of directories for save one of all duplicates\n"
-                    + "--log, -l <path to log[ path to log 2]>\n"
-                    + "\tOptional. Path to log file for logging file relations.\n"
-                    + "--nodelete, -n\n"
-                    + "\tOptional. List of directories wich protect child files of deleting.\n"
-                    + "--help, -h\n"
-                    + "\tIf you read this annotatin, you know it:)\n";
+            String help = """
+                    --ext, -e <extension[ extension2]>
+                    \tOptional. File extension(s) to find.
+                    --path, -p <directory[ directory2]>
+                    \tOptional. Directories where find files.
+                    --recursive, -r
+                    \tFind files in subdirectories.
+                    --groupbyext, -g
+                    \tEquals files, which has not equals extensions, are not duplicates.
+                    --saveonlyone, -o
+                    \tIf some rules save more than one file in duplicates group, program really save only random first from saved by rules.
+                    --check, -c
+                    \tCheck duplicated equality by MD5 algorithm.
+                    --delete, -d
+                    \tIf this option missing program will not delete files.
+                    --exclude, -x
+                    \tOptional. Regular expression to exclude directories to scan.
+                    --saveprefer, -s <directory1[ directory2]>
+                    \tOptional. Priority list of directories for save one of all duplicates
+                    --log, -l <path to log[ path to log 2]>
+                    \tOptional. Path to log file for logging file relations.
+                    --nodelete, -n
+                    \tOptional. List of directories wich protect child files of deleting.
+                    --help, -h
+                    \tIf you read this annotatin, you know it:)
+                    """;
             System.out.println(help);
             return;
         }
@@ -160,9 +162,9 @@ public class DuplicateFinder {
             List<CheckedFile[]> deletePreparation = new ArrayList<>();
             compare.values().stream().forEach(groups -> groups.stream()
                     .filter(group -> group.length > 1)
-                    .map(group -> dds.solve(group))
-                    .filter(group -> group != null)
-                    .forEach(group -> deletePreparation.add(group)));
+                    .map(dds::solve)
+                    .filter(Objects::nonNull)
+                    .forEach(deletePreparation::add));
             long delSize = 0;
             for (CheckedFile[] group : deletePreparation) {
                 for (CheckedFile cf : group) {

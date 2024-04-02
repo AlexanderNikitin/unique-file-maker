@@ -26,10 +26,6 @@ public class FileInReading implements Closeable {
         return this.stream.getLength();
     }
 
-    public ByteBuffer getBuffer() {
-        return this.bb.asReadOnlyBuffer();
-    }
-
     public boolean read() throws IOException {
         int res = this.stream.read(this.bb);
         this.bb.rewind();

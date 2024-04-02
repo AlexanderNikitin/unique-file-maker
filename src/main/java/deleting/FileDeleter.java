@@ -34,10 +34,10 @@ public class FileDeleter {
             if (file.renameTo(to)) {
                 return true;
             } else {
-                System.out.println("error rename: from : " + file.toString() + " to: " + to.toString());
+                System.out.println("error rename: from : " + file + " to: " + to);
             }
         } else {
-            System.out.println("err mkdirs: " + backupDir.toString());
+            System.out.println("err mkdirs: " + backupDir);
         }
         return false;
     }

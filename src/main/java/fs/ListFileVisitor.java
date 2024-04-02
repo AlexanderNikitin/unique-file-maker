@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 
 public class ListFileVisitor extends SimpleFileVisitor<Path> {
 
-    private static int FLAGS = Pattern.CASE_INSENSITIVE;
+    private static final int FLAGS = Pattern.CASE_INSENSITIVE;
 
-    private static Pattern[] SKIP_ALLWAYS = new Pattern[]{
+    private static final Pattern[] SKIP_ALWAYS = new Pattern[]{
             Pattern.compile("_files$", FLAGS),
             Pattern.compile(Pattern.quote("$RECYCLE.BIN"), FLAGS),
             Pattern.compile(Pattern.quote(File.separatorChar + "backup_") + "\\d+$", FLAGS)
@@ -30,7 +30,7 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
         this.setVisitedDirs = new HashSet<>();
 
         this.skipPatternDir = new ArrayList<>();
-        this.skipPatternDir.addAll(Arrays.asList(SKIP_ALLWAYS));
+        this.skipPatternDir.addAll(Arrays.asList(SKIP_ALWAYS));
 
         if (exclude != null) {
             for (String s : exclude) {

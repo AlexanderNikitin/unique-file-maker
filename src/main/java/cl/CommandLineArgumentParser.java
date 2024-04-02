@@ -83,7 +83,7 @@ public class CommandLineArgumentParser {
                         if (!bIsLongOptionName) {
                             Option option = this.indexByShortName.get(c);
                             if (option == null) {
-                                throw new Exception("Unknow option! Option: " + c + " Element number: " + nElement + " Element: " + arg);
+                                throw new Exception("Unknown option! Option: " + c + " Element number: " + nElement + " Element: " + arg);
                             }
                             options.add(lastOption = option);
                         }
@@ -107,7 +107,7 @@ public class CommandLineArgumentParser {
                 String sOptName = arg.substring(2);
                 Option option = this.indexByName.get(sOptName);
                 if (option == null) {
-                    throw new Exception("Unknow option: " + sOptName + " Element number: " + nElement + " Element: " + arg);
+                    throw new Exception("Unknown option: " + sOptName + " Element number: " + nElement + " Element: " + arg);
                 }
                 options.add(lastOption = option);
             }
@@ -115,6 +115,6 @@ public class CommandLineArgumentParser {
         if (lastOption != null && lastOption.needAddArgument()) {
             throw new Exception("Missing an argument!");
         }
-        return new CommandLineArgumentParseResult(options.toArray(new Option[options.size()]), Arrays.copyOfRange(args, nElement, args.length));
+        return new CommandLineArgumentParseResult(options.toArray(new Option[options.size()]));
     }
 }

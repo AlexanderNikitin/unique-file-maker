@@ -1,6 +1,5 @@
 package utils;
 
-import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +15,7 @@ public class Log {
             this.logFiles = new ArrayList<>();
             for (String filename : filenames) {
                 try {
-                    this.logFiles.add(new PrintStream(new File(filename)));
+                    this.logFiles.add(new PrintStream(filename));
                 } catch (Exception e) {
                     System.err.println(e.getMessage());
                 }

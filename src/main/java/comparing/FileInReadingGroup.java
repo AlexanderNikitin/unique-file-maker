@@ -39,7 +39,6 @@ public final class FileInReadingGroup implements Closeable {
                 }
                 alReading.add(fr);
             } catch (IOException e) {
-                System.err.println(e.toString());
                 System.err.println(e.getMessage());
             }
         }
@@ -93,7 +92,7 @@ public final class FileInReadingGroup implements Closeable {
         return result;
     }
 
-    public File[] fiels() {
+    public File[] files() {
         int n = this.reading.size();
         File[] result = new File[n];
         for (int i = 0; i < n; i++) {
