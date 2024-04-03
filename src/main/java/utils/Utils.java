@@ -11,7 +11,6 @@ public abstract class Utils {
     }
 
     public static String getHumanDataSize(long speedByte) {
-
         long byteInMb = BYTE_IN_KB * BYTE_IN_KB;
         long byteInGb = byteInMb * BYTE_IN_KB;
         if (speedByte >= byteInGb) {
@@ -29,9 +28,6 @@ public abstract class Utils {
     public static String repeatString(String string, int count) {
         if (string == null) {
             return null;
-        }
-        if (string.isEmpty() || count <= 0) {
-            return "";
         }
         return string.repeat(count);
     }
