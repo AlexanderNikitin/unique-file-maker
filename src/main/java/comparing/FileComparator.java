@@ -8,6 +8,8 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class FileComparator {
 
@@ -23,20 +25,8 @@ public class FileComparator {
 
     private Map<Long, List<File>> group(List<File> files) {
         System.out.println("Grouping...");
-        Map<Long, List<File>> hmSizeGrouping = new HashMap<>();
-        for (File f : files) {
-            long size = f.length();
-            if (size > 0) {
-                List<File> lEqualSize;
-                if (hmSizeGrouping.containsKey(size)) {
-                    lEqualSize = hmSizeGrouping.get(size);
-                } else {
-                    hmSizeGrouping.put(size, lEqualSize = new ArrayList<>());
-                }
-                lEqualSize.add(f);
-            }
-        }
-        return hmSizeGrouping;
+        return files.stream()
+                .collect(Collectors.groupingBy(File::length));
     }
 
     private String getFileExtensionByName(String fileName) {
@@ -82,7 +72,6 @@ public class FileComparator {
         long allSize = getAllSize();
         System.out.println("All size: " + allSize);
 
-        //long t = System.currentTimeMillis();
         int errGrCnt = 0;
         long curSize = 0;
         long oldPercent = -1;
@@ -131,13 +120,6 @@ public class FileComparator {
                     }
                 }
             }
-            /*long curT = System.currentTimeMillis();
-             long timeSec = (curT - t) / 1000;
-             long speedByte = curSize;
-             if (timeSec > 0) {
-             speedByte /= timeSec;
-             }
-             out.println((speedByte) + " B/s");*/
         }
         System.out.println("All errored groups: " + errGrCnt);
         return errGrCnt == 0;
