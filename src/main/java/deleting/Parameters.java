@@ -1,7 +1,6 @@
 package deleting;
 
 public enum Parameters {
-
     DIRECTORY_DEPTH,
     FILENAME_LENGTH,
     PATH_LENGTH,

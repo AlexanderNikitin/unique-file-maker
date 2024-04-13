@@ -19,30 +19,35 @@ public class CheckedFile {
         this.delete = false;
 
         String sFileName = file.getName();
+        String absPath = file.getAbsolutePath();
 
-        boolean isEnglishName = true;
-        for (int i = 0; i < sFileName.length(); i++) {
-            if ((int) sFileName.charAt(i) > 127) {
-                isEnglishName = false;
-                break;
+        this.parameterValues = new EnumMap<>(Parameters.class);
+
+        this.parameterValues.put(Parameters.IS_ENGLISH_FILE_NAME, isEnglishFileName(sFileName) ? 1 : 0);
+        this.parameterValues.put(Parameters.IS_COPY, IS_COPY_PATTERN.matcher(sFileName).find() ? 1 : 0);
+        this.parameterValues.put(Parameters.DIRECTORY_DEPTH, getDepth(absPath));
+        this.parameterValues.put(Parameters.FILENAME_LENGTH, sFileName.length());
+        this.parameterValues.put(Parameters.PATH_LENGTH, absPath.length());
+
+        this.cacheAbsolutePath = this.file.getAbsolutePath();
+    }
+
+    private static boolean isEnglishFileName(String fileName) {
+        for (int i = 0; i < fileName.length(); i++) {
+            if ((int) fileName.charAt(i) > 127) {
+                return false;
             }
         }
+        return true;
+    }
 
+    private static int getDepth(String absPath) {
         int slashCnt = 0;
-        String absPath = file.getAbsolutePath();
         for (int j = 0; j < absPath.length(); j++) {
             if (absPath.charAt(j) == File.separatorChar) {
                 slashCnt++;
             }
         }
-
-        this.parameterValues = new EnumMap<>(Parameters.class);
-        this.parameterValues.put(Parameters.IS_ENGLISH_FILE_NAME, isEnglishName ? 1 : 0);
-        this.parameterValues.put(Parameters.IS_COPY, IS_COPY_PATTERN.matcher(sFileName).find() ? 1 : 0);
-        this.parameterValues.put(Parameters.DIRECTORY_DEPTH, slashCnt);
-        this.parameterValues.put(Parameters.FILENAME_LENGTH, sFileName.length());
-        this.parameterValues.put(Parameters.PATH_LENGTH, absPath.length());
-
-        this.cacheAbsolutePath = this.file.getAbsolutePath();
+        return slashCnt;
     }
 }

@@ -8,7 +8,6 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FileComparator {
@@ -42,7 +41,7 @@ public class FileComparator {
             if (lOneSize.size() > 1) {
                 if (this.diffByExt) {
                     Map<String, List<File>> mGroupedByExt = new HashMap<>();
-                    lOneSize.stream().forEach(file -> {
+                    lOneSize.forEach(file -> {
                         String ext = getFileExtensionByName(file.getName());
                         List<File> filesByExt;
                         if (mGroupedByExt.containsKey(ext)) {

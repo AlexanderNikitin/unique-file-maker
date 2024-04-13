@@ -11,10 +11,11 @@ public class ExtFileNameFilter implements FilenameFilter {
     private final Set<String> extensionSet = new HashSet<>();
 
     public ExtFileNameFilter(List<String> extensions) {
-        if (extensions != null) {
-            for (String extension : extensions) {
-                this.extensionSet.add(extension.toLowerCase());
-            }
+        if (extensions == null) {
+            throw new NullPointerException();
+        }
+        for (String extension : extensions) {
+            this.extensionSet.add(extension.toLowerCase());
         }
     }
 

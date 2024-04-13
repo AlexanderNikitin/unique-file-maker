@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-public class FileInReading implements Closeable {
+public class FileInReading implements AutoCloseable, Closeable {
 
     private static final int BUFFER_SIZE = 1024 * 4;
     public final ByteBuffer bb;

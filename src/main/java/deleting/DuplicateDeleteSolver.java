@@ -41,7 +41,9 @@ public class DuplicateDeleteSolver {
             boolean[] isPreferFile = new boolean[result.length];
             boolean preferFileExists = false;
             for (int i = 0; i < result.length; i++) {
-                if (isPreferFile[i] = result[i].cacheAbsolutePath.startsWith(dir)) {
+                boolean starts = result[i].cacheAbsolutePath.startsWith(dir);
+                isPreferFile[i] = starts;
+                if (starts) {
                     preferFileExists = true;
                 }
             }
@@ -53,8 +55,8 @@ public class DuplicateDeleteSolver {
             }
         }
         for (Rule rule : this.rules) {
-            Parameters parameters = rule.parameters;
-            boolean saveByMax = rule.saveByMax;
+            Parameters parameters = rule.parameters();
+            boolean saveByMax = rule.saveByMax();
             int valueMax = Integer.MIN_VALUE;
             int valueMin = Integer.MAX_VALUE;
             for (CheckedFile checkedFile : result) {

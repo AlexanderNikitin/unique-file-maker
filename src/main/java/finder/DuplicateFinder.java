@@ -15,20 +15,6 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DuplicateFinder {
-
-    private static void print(Map<Long, List<File[]>> dupsGroups) {
-        dupsGroups.entrySet().stream().forEach(arFileOneSize -> {
-            System.out.println(arFileOneSize.getKey());
-            System.out.println(Utils.repeatString("-", 50));
-            arFileOneSize.getValue().stream().filter(dups -> dups.length > 1).forEach(dups -> {
-                for (File dup : dups) {
-                    System.out.println(dup.toString());
-                }
-                System.out.println(Utils.repeatString("-", 50));
-            });
-        });
-    }
-
     public static void main(String[] args) throws Exception {
         List<Option> lOptions = new ArrayList<>();
         lOptions.add(new Option("ext", true));
@@ -160,7 +146,7 @@ public class DuplicateFinder {
             DuplicateDeleteSolver dds = new DuplicateDeleteSolver(lSaveRules, bSaveOnlyOne, lSavePrefer, lNoDelete);
 
             List<CheckedFile[]> deletePreparation = new ArrayList<>();
-            compare.values().stream().forEach(groups -> groups.stream()
+            compare.values().forEach(groups -> groups.stream()
                     .filter(group -> group.length > 1)
                     .map(dds::solve)
                     .filter(Objects::nonNull)

@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import static java.nio.channels.FileChannel.open;
 import static java.nio.file.StandardOpenOption.READ;
 
-public class LockedFileInputStream implements Closeable {
+public class LockedFileInputStream implements AutoCloseable, Closeable {
 
     private final FileChannel fileChannel;
 
