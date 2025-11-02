@@ -11,26 +11,27 @@ public class FileSizeGroup {
     private final Stack<FileInReadingGroup> stack = new Stack<>();
 
     public FileSizeGroup(List<File> files) {
-        if (files != null && !files.isEmpty()) {
-            List<File> filtered = new ArrayList<>();
-            long size = -1;
-            for (File file : files) {
-                if (size >= 0) {
-                    if (file.length() == size) {
-                        filtered.add(file);
-                    } else {
-                        System.out.println("Different size: " + file);
-                    }
-                } else {
-                    size = file.length();
+        if (files == null || files.isEmpty()) {
+            return;
+        }
+        List<File> filtered = new ArrayList<>();
+        long size = -1;
+        for (File file : files) {
+            if (size >= 0) {
+                if (file.length() == size) {
                     filtered.add(file);
+                } else {
+                    System.out.println("Different size: " + file);
                 }
+            } else {
+                size = file.length();
+                filtered.add(file);
             }
-            try {
-                this.stack.push(FileInReadingGroup.initFromFiles(filtered));
-            } catch (Exception e) {
-                System.err.println(e.getMessage());
-            }
+        }
+        try {
+            this.stack.push(FileInReadingGroup.initFromFiles(filtered));
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
     }
 

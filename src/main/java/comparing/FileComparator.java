@@ -35,7 +35,6 @@ public class FileComparator {
 
     private void compare(Map<Long, List<File>> hmSizeGrouping) throws IOException {
         System.out.println("Compare...");
-        long t = System.currentTimeMillis();
         for (Map.Entry<Long, List<File>> eOneSize : hmSizeGrouping.entrySet()) {
             List<File> lOneSize = eOneSize.getValue();
             if (lOneSize.size() > 1) {
@@ -63,7 +62,6 @@ public class FileComparator {
                 }
             }
         }
-        System.out.println("Compare time: " + (System.currentTimeMillis() - t));
     }
 
     private boolean check() throws NoSuchAlgorithmException {
