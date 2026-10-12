@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DuplicateFinder {
-    public static void main(String[] args) throws Exception {
+    static void main(String[] args) throws Exception {
         List<Option> lOptions = new ArrayList<>();
         lOptions.add(new Option("ext", true));
         lOptions.add(new Option("path", true));
