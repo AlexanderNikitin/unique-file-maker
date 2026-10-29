@@ -3,16 +3,15 @@ package fs;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class ExtFileNameFilter implements FilenameFilter {
 
     private final Set<String> extensionSet = new HashSet<>();
 
-    public ExtFileNameFilter(List<String> extensions) {
+    public ExtFileNameFilter(String[] extensions) {
         if (extensions == null) {
-            throw new NullPointerException();
+            return;
         }
         for (String extension : extensions) {
             this.extensionSet.add(extension.toLowerCase());

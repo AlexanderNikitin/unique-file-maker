@@ -8,8 +8,8 @@ public class Log {
 
     private final List<PrintStream> logFiles;
 
-    public Log(List<String> filenames) {
-        if (filenames == null || filenames.isEmpty()) {
+    public Log(String[] filenames) {
+        if (filenames == null || filenames.length == 0) {
             this.logFiles = null;
         } else {
             this.logFiles = new ArrayList<>();

@@ -25,7 +25,7 @@ public class ListFileVisitor extends SimpleFileVisitor<Path> {
     private final Set<String> setVisitedDirs;
     private final List<Pattern> skipPatternDir;
 
-    public ListFileVisitor(FilenameFilter filenameFilter, List<String> exclude) {
+    public ListFileVisitor(FilenameFilter filenameFilter, String[] exclude) {
         this.filenameFilter = filenameFilter;
         this.setVisitedDirs = new HashSet<>();
 

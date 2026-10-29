@@ -9,20 +9,16 @@ public class DuplicateDeleteSolver {
 
     private final boolean saveOnlyOne;
     private final List<Rule> rules = new ArrayList<>();
-    private final List<String> savePreferDirectories = new ArrayList<>();
-    private final List<String> doNotDeleteDirectories = new ArrayList<>();
+    private final String[] savePreferDirectories;
+    private final String[] doNotDeleteDirectories;
 
-    public DuplicateDeleteSolver(List<Rule> saveRules, boolean saveOnlyOne, List<String> savePreferDirectories, List<String> doNotDeleteDirectories) {
+    public DuplicateDeleteSolver(List<Rule> saveRules, boolean saveOnlyOne, String[] savePreferDirectories, String[] doNotDeleteDirectories) {
         if (saveRules != null) {
             this.rules.addAll(saveRules);
         }
         this.saveOnlyOne = saveOnlyOne;
-        if (savePreferDirectories != null) {
-            this.savePreferDirectories.addAll(savePreferDirectories);
-        }
-        if (doNotDeleteDirectories != null) {
-            this.doNotDeleteDirectories.addAll(doNotDeleteDirectories);
-        }
+        this.savePreferDirectories = savePreferDirectories;
+        this.doNotDeleteDirectories = doNotDeleteDirectories;
     }
 
     public CheckedFile[] solve(File[] duplicates) {
@@ -97,7 +93,7 @@ public class DuplicateDeleteSolver {
         }
         boolean[] canDelete = new boolean[result.length];
         Arrays.fill(canDelete, true);
-        if (!this.doNotDeleteDirectories.isEmpty()) {
+        if (this.doNotDeleteDirectories != null) {
             for (String directory : this.doNotDeleteDirectories) {
                 for (int i = 0; i < result.length; i++) {
                     canDelete[i] = !result[i].cacheAbsolutePath.startsWith(directory);

@@ -14,11 +14,11 @@ import java.util.Set;
 
 public class FileSearcher {
 
-    private final List<String> extensions;
+    private final String[] extensions;
     private final boolean recursive;
-    private final List<String> exclude;
+    private final String[] exclude;
 
-    public FileSearcher(List<String> extensions, boolean recursive, List<String> exclude) {
+    public FileSearcher(String[] extensions, boolean recursive, String[] exclude) {
         this.extensions = extensions;
         this.recursive = recursive;
         this.exclude = exclude;
