@@ -2,9 +2,5 @@
 .idea
 *.iml
 *.class
-*.html
-1.txt
-META-INF/
 out/
-*.properties
 /target

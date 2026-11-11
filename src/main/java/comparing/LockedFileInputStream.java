@@ -1,7 +1,7 @@
 package comparing;
 
 import com.sun.nio.file.ExtendedOpenOption;
-import utils.Utils;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.Closeable;
 import java.io.File;
@@ -22,7 +22,7 @@ public class LockedFileInputStream implements AutoCloseable, Closeable {
     }
 
     public LockedFileInputStream(Path path) throws IOException {
-        this.fileChannel = Utils.IS_WINDOWS ?
+        this.fileChannel = SystemUtils.IS_OS_WINDOWS ?
                 open(path, READ, ExtendedOpenOption.NOSHARE_DELETE, ExtendedOpenOption.NOSHARE_WRITE) :
                 open(path, READ);
     }
