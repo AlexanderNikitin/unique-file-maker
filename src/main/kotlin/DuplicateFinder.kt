@@ -1,10 +1,14 @@
+import command.CalcCommand
 import command.ScanCommand
 import deleting.DuplicateDeleteSolver
 import deleting.Parameters
 import deleting.Rule
 import picocli.CommandLine
 
-@CommandLine.Command(name = "df", subcommands = [ScanCommand::class, CommandLine.HelpCommand::class])
+@CommandLine.Command(name = "df", subcommands = [
+    ScanCommand::class,
+    CalcCommand::class,
+    CommandLine.HelpCommand::class])
 class DuplicateFinder : Runnable {
     @CommandLine.Option(names = ["-g", "--groupbyext"])
     var groupbyext: Boolean = false

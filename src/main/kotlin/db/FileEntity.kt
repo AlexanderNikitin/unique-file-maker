@@ -20,5 +20,11 @@ class FileEntity(
     @Column(name = "size")
     var size: Long? = null,
     @Column(name = "update_time")
-    var updateTime: Instant? = null
+    var updateTime: Instant? = null,
+    @Column(name = "sha256")
+    var sha256: String? = null,
+    @Column(name = "fnf")
+    var fnf: Boolean? = false,
+    @Column(name = "calcErr")
+    var calcErr: Boolean? = false
 )

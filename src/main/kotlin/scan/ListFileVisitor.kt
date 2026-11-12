@@ -55,7 +55,7 @@ class ListFileVisitor(
         if (exc.javaClass == java.nio.file.NoSuchFileException::class.java) {
             println("Не найден файл $dir")
         }
-        Throwable(exc).printStackTrace()
+        if (Settings.debug) Throwable(exc).printStackTrace()
         return FileVisitResult.CONTINUE
     }
 

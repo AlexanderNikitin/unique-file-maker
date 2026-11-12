@@ -28,6 +28,8 @@ class ScanCommand : Runnable {
 
         extensions.forEach { filterList.add(MatchExtensionFileNameFilter(it)) }
 
+        filterList.add(MatchFileNameFilter("Vivaldi"))
+
         if (SystemUtils.IS_OS_WINDOWS) {
             filterList.add(RegExpExcludeFilenameFilter(Pattern.compile("_files$")))
             filterList.add(MatchFileNameFilter($$"$RECYCLE.BIN"))
