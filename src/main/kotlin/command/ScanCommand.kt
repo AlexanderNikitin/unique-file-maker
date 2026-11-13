@@ -30,6 +30,10 @@ class ScanCommand : Runnable {
 
         filterList.add(MatchFileNameFilter("Vivaldi"))
 
+        if (SystemUtils.IS_OS_MAC) {
+            filterList.add(MatchFileNameFilter("Library"))
+        }
+
         if (SystemUtils.IS_OS_WINDOWS) {
             filterList.add(RegExpExcludeFilenameFilter(Pattern.compile("_files$")))
             filterList.add(MatchFileNameFilter($$"$RECYCLE.BIN"))
