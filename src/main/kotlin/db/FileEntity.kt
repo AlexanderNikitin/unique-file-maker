@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import java.time.Instant
+import java.util.UUID
 
 @Entity
 @Table(name = "file")
@@ -26,5 +27,7 @@ class FileEntity(
     @Column(name = "fnf")
     var fnf: Boolean? = false,
     @Column(name = "calcErr")
-    var calcErr: Boolean? = false
+    var calcErr: Boolean? = false,
+    @Column(name = "group_id")
+    var groupId: UUID? = null
 )
