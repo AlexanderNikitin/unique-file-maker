@@ -31,5 +31,7 @@ class FileEntity(
     @Column(name = "group_id")
     var groupId: UUID? = null,
     @Column(name = "error_message")
-    var errorMessage: String? = null
+    var errorMessage: String? = null,
+    @Column(name = "delete")
+    var delete: Boolean? = null
 )

@@ -8,9 +8,7 @@ import java.util.*
 
 @CommandLine.Command(
     name = "find",
-    description = [
-        "Группировка файлов по дублям на основе размера, хеша и сравнения контента"
-    ]
+    description = ["Группировка файлов по дублям на основе размера, хеша и сравнения контента"]
 )
 class FindCommand : Runnable {
     private val fileRepository = FileRepository()
