@@ -29,5 +29,7 @@ class FileEntity(
     @Column(name = "calcErr")
     var calcErr: Boolean? = false,
     @Column(name = "group_id")
-    var groupId: UUID? = null
+    var groupId: UUID? = null,
+    @Column(name = "error_message")
+    var errorMessage: String? = null
 )

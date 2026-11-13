@@ -4,7 +4,7 @@ import Settings
 import checksum.CheckSumUpdater
 import db.FileRepository
 import picocli.CommandLine
-import java.util.UUID
+import java.util.*
 
 @CommandLine.Command(
     name = "find",
@@ -18,33 +18,59 @@ class FindCommand : Runnable {
     override fun run() {
         val potentialDuplicates = fileRepository.findPotentialDuplicates()
 
-        if (Settings.debug) potentialDuplicates.entries.forEach {
-            println("${it.key} ${it.value.size}")
-            it.value.forEach { f -> println("${f.path}") }
-        }
-
         val duplicates = potentialDuplicates
             .mapValues { g ->
                 g.value
                     .map { CheckSumUpdater(it, fileRepository) }
-                    .filter { it.valid }
+                    .filter {
+                        if (!it.valid) {
+                            val error = "Путь отброшен по причине невалидност хеша"
+                            val entity = it.fileEntity
+                            entity.errorMessage = error
+                            fileRepository.save(entity)
+                            return@filter false
+                        }
+                        return@filter true
+                    }
             }
-            .filter { it.value.size > 1 }
-            .mapValues { g -> g.value.associateBy { it.sum } }
-            .filterValues { it.size > 1 }
-            .filter { it.value.isNotEmpty() }
+            .mapValues { g ->
+                g.value.groupBy {
+                    val sum = it.sum
+                    if (sum == null) {
+                        val entity = it.fileEntity
+                        val error = "Путь ассоциирован с нулевым хешем"
+                        entity.errorMessage = error
+                        fileRepository.save(entity)
+                    }
+                    sum
+                }
+            }
+            .mapValues { bySize ->
+                bySize.value.filterValues {
+                    val size = it.size
+                    if (size == 1) {
+                        val single = it.first()
+                        val entity = single.fileEntity
+                        val error = "Файл в единственном экземпляре"
+                        entity.errorMessage = error
+                        fileRepository.save(entity)
+                        return@filterValues false
+                    } else if (size == 0) {
+                        if (Settings.debug) println("Группа размера пуста")
+                        return@filterValues false
+                    }
+                    return@filterValues true
+                }
+            }
 
         duplicates.values.forEach {
-            val group = UUID.randomUUID()
-            it.values.forEach { f ->
-                f.fileEntity.groupId = group
-                fileRepository.save(f.fileEntity)
+            it.values.forEach { g ->
+                val group = UUID.randomUUID()
+                g.forEach { f ->
+                    f.fileEntity.groupId = group
+                    fileRepository.save(f.fileEntity)
+                }
             }
-        }
-
-        duplicates.entries.forEach {
-            println("${it.key} ${it.value.size}")
-            it.value.forEach { f -> println("${f.value.fileEntity.path}") }
         }
     }
 }
