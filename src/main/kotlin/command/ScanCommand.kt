@@ -29,7 +29,7 @@ class ScanCommand : Runnable {
         extensions.forEach { filterList.add(MatchExtensionFileNameFilter(it)) }
 
         filterList.add(MatchFileNameFilter("Vivaldi"))
-        filterList.add(MatchFileNameFilter(".ufm"))
+        filterList.add(MatchFileNameFilter(Settings.workingFolder))
 
         if (SystemUtils.IS_OS_MAC) {
             filterList.add(MatchFileNameFilter("Library"))
