@@ -11,10 +11,13 @@ import java.util.*
     description = ["Группировка файлов по дублям на основе размера, хеша и сравнения контента"]
 )
 class FindCommand : Runnable {
+    @CommandLine.Option(names = ["-e", "--extensions"], arity = "0..*", description = ["Только файлы с этими расширениями"])
+    private var extensions: Array<String> = arrayOf()
+
     private val fileRepository = FileRepository()
 
     override fun run() {
-        val potentialDuplicates = fileRepository.findPotentialDuplicates()
+        val potentialDuplicates = fileRepository.findPotentialDuplicates(extensions)
 
         val duplicates = potentialDuplicates
             .mapValues { g ->
