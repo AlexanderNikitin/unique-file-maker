@@ -19,7 +19,7 @@ class CalcCommand : Runnable {
         val potentialDuplicates = fileRepository.findPotentialDuplicates()
         if (Settings.debug) potentialDuplicates.entries.forEach {
             println("${it.key} ${it.value.size}")
-            it.value.forEach { f -> println("${f.path}") }
+            it.value.forEach { f -> println("${f.fileId}") }
         }
         potentialDuplicates.entries.forEach {
             it.value.forEach { f ->

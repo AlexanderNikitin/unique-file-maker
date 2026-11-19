@@ -4,9 +4,11 @@ import Settings
 import db.FileEntity
 import db.FileRepository
 import org.apache.commons.codec.digest.DigestUtils
-import java.io.File
 import java.io.FileNotFoundException
-import java.time.Instant
+import java.nio.file.Path
+import kotlin.io.path.exists
+import kotlin.io.path.getLastModifiedTime
+import kotlin.io.path.inputStream
 
 class CheckSumUpdater(
     val fileEntity: FileEntity,
@@ -22,13 +24,15 @@ class CheckSumUpdater(
         }
 
     fun validate() {
-        val file = File(fileEntity.path!!)
-        if (file.exists()) {
+        val fileId = fileEntity.fileId
+        val path = Path.of(fileId.folder!!, fileId.name)
+        if (path.exists()) {
             try {
-                if (fileEntity.sha256 == null || fileEntity.updateTime!!.toEpochMilli() < file.lastModified()) {
-                    if (Settings.debug) println("Считаем для ${fileEntity.path}")
-                    fileEntity.sha256 = calcSha256(file)
-                    fileEntity.updateTime = Instant.ofEpochMilli(file.lastModified())
+                val lastModified = path.getLastModifiedTime().toInstant()
+                if (fileEntity.sha256 == null || fileEntity.updateTime?.isBefore(lastModified) ?: true) {
+                    if (Settings.debug) println("Считаем для $path")
+                    fileEntity.sha256 = calcSha256(path)
+                    fileEntity.updateTime = lastModified
                     fileEntity.fnf = false
                     fileEntity.calcErr = false
                 }
@@ -45,7 +49,7 @@ class CheckSumUpdater(
         fileRepository.save(fileEntity)
     }
 
-    private fun calcSha256(file: File): String {
-        return DigestUtils.sha256Hex(file.inputStream().buffered())
+    private fun calcSha256(path: Path): String {
+        return DigestUtils.sha256Hex(path.inputStream().buffered())
     }
 }

@@ -1,5 +1,7 @@
 package collect
 
+import java.nio.file.Path
+
 interface FilesCollector {
-    fun collect(foundFile: FoundFile)
+    fun collect(path: Path)
 }

@@ -1,6 +1,6 @@
 package scan
 
-import collect.FoundFile
+import Settings
 import collect.FilesCollector
 import java.io.FilenameFilter
 import java.io.IOException
@@ -8,7 +8,6 @@ import java.nio.file.FileVisitResult
 import java.nio.file.Path
 import java.nio.file.SimpleFileVisitor
 import java.nio.file.attribute.BasicFileAttributes
-import kotlin.io.path.absolutePathString
 import kotlin.io.path.isHidden
 import kotlin.io.path.name
 
@@ -43,10 +42,7 @@ class ListFileVisitor(
             return FileVisitResult.CONTINUE
         }
         if (attributes.isRegularFile) {
-            filesCollector.collect(FoundFile(
-                path.absolutePathString(),
-                attributes.size(),
-                attributes.lastModifiedTime()))
+            filesCollector.collect(path)
         }
         return FileVisitResult.CONTINUE
     }

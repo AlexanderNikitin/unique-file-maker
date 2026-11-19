@@ -31,7 +31,7 @@ class FileRepository {
         val subquery = query.subquery(Long::class.java)
         val subRoot = subquery.from(FileEntity::class.java)
 
-        val pathPath: Path<String> = root.get("path")
+        val fileIdPath: Path<FileId> = root.get("fileId")
         val sizePath: Path<Long> = root.get("size")
         val updateTimePath: Path<Instant> = root.get("updateTime")
         val sha256Path: Path<String> = root.get("sha256")
@@ -39,7 +39,7 @@ class FileRepository {
         val subSizePath: Path<Long> = subRoot.get("size")
         val countExpr = criteriaBuilder.count(subRoot)
 
-        query.select(criteriaBuilder.tuple(pathPath, sizePath, updateTimePath, sha256Path))
+        query.select(criteriaBuilder.tuple(fileIdPath, sizePath, updateTimePath, sha256Path))
             .where(
                 criteriaBuilder.`in`(
                     sizePath,
@@ -52,12 +52,12 @@ class FileRepository {
         val results = sessionFactory.currentSession.createQuery(query).resultList
         val resultList = mutableMapOf<Long, MutableList<FileEntity>>()
         for (tuple in results) {
-            val path = tuple[0] as String
+            val fileId = tuple[0] as FileId
             val size = tuple[1] as Long
             val updateTime = tuple[2] as Instant
             val sha256 = tuple[3] as String?
             resultList.putIfAbsent(size, mutableListOf())
-            resultList[size]!!.add(FileEntity(path, size, updateTime, sha256))
+            resultList[size]!!.add(FileEntity(fileId, size, updateTime, sha256))
         }
         sessionFactory.currentSession.transaction.rollback()
         return resultList
@@ -74,7 +74,7 @@ class FileRepository {
         val subquery = query.subquery(UUID::class.java)
         val subRoot = subquery.from(FileEntity::class.java)
 
-        val pathPath: Path<String> = root.get("path")
+        val fileIdPath: Path<String> = root.get("fileId")
         val sizePath: Path<Long> = root.get("size")
         val updateTimePath: Path<Instant> = root.get("updateTime")
         val sha256Path: Path<String> = root.get("sha256")
@@ -83,7 +83,7 @@ class FileRepository {
         val subGroupPath: Path<UUID> = subRoot.get("groupId")
         val countExpr = criteriaBuilder.count(subRoot)
 
-        query.select(criteriaBuilder.tuple(pathPath, sizePath, updateTimePath, sha256Path, groupPath))
+        query.select(criteriaBuilder.tuple(fileIdPath, sizePath, updateTimePath, sha256Path, groupPath))
             .where(
                 criteriaBuilder.`in`(
                     groupPath,
@@ -97,13 +97,13 @@ class FileRepository {
         val results = sessionFactory.currentSession.createQuery(query).resultList
         val resultList = mutableMapOf<UUID, MutableList<FileEntity>>()
         for (tuple in results) {
-            val path = tuple[0] as String
+            val fileId = tuple[0] as FileId
             val size = tuple[1] as Long
             val updateTime = tuple[2] as Instant
             val sha256 = tuple[3] as String?
             val group = tuple[4] as UUID
             resultList.putIfAbsent(group, mutableListOf())
-            resultList[group]!!.add(FileEntity(path, size, updateTime, sha256, groupId = group))
+            resultList[group]!!.add(FileEntity(fileId, size, updateTime, sha256, groupId = group))
         }
         sessionFactory.currentSession.transaction.rollback()
         return resultList
