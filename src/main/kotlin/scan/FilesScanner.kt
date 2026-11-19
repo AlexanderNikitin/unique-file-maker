@@ -9,9 +9,9 @@ import java.nio.file.Path
 import kotlin.io.path.readAttributes
 
 class FilesScanner(
-    private val filesCollector: FilesCollector,
-    private val fileNameFilter: FilenameFilter,
-    private val skipHidden: Boolean = true
+    filesCollector: FilesCollector,
+    fileNameFilter: FilenameFilter,
+    skipHidden: Boolean = true
 ) {
     private val fileVisitor = ListFileVisitor(filesCollector, fileNameFilter, skipHidden)
 
@@ -21,7 +21,7 @@ class FilesScanner(
             Files.walkFileTree(path, fileVisitor)
         } else {
             fileVisitor.preVisitDirectory(path, path.readAttributes())
-            path.toFile().list().forEach {
+            path.toFile().list()?.forEach {
                 val file = File(it)
                 try {
                     if (file.isFile) {
