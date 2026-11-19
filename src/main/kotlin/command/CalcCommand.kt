@@ -13,10 +13,13 @@ import picocli.CommandLine
     ]
 )
 class CalcCommand : Runnable {
+    @CommandLine.Option(names = ["-e", "--extensions"], arity = "0..*", description = ["Только файлы с этими расширениями"])
+    private var extensions: Array<String> = arrayOf()
+
     private val fileRepository = FileRepository()
 
     override fun run() {
-        val potentialDuplicates = fileRepository.findPotentialDuplicates()
+        val potentialDuplicates = fileRepository.findPotentialDuplicates(extensions)
         if (Settings.debug) potentialDuplicates.entries.forEach {
             println("${it.key} ${it.value.size}")
             it.value.forEach { f -> println("${f.fileId}") }

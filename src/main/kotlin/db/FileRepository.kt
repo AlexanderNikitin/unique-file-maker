@@ -4,7 +4,7 @@ import jakarta.persistence.criteria.Path
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
 import java.time.Instant
-import java.util.UUID
+import java.util.*
 
 
 class FileRepository {
@@ -20,7 +20,7 @@ class FileRepository {
         sessionFactory.currentSession.transaction.commit()
     }
 
-    fun findPotentialDuplicates(): Map<Long, List<FileEntity>> {
+    fun findPotentialDuplicates(extensions: Array<String>? = null): Map<Long, List<FileEntity>> {
         sessionFactory.currentSession.transaction.begin()
 
         val criteriaBuilder = sessionFactory.currentSession.criteriaBuilder
@@ -32,21 +32,36 @@ class FileRepository {
         val subRoot = subquery.from(FileEntity::class.java)
 
         val fileIdPath: Path<FileId> = root.get("fileId")
+        val extensionPath: Path<String> = fileIdPath.get("extension")
         val sizePath: Path<Long> = root.get("size")
         val updateTimePath: Path<Instant> = root.get("updateTime")
         val sha256Path: Path<String> = root.get("sha256")
 
+        val subFileIdPath: Path<FileId> = subRoot.get("fileId")
         val subSizePath: Path<Long> = subRoot.get("size")
+        val subExtensionPath: Path<String> = subFileIdPath.get("extension")
         val countExpr = criteriaBuilder.count(subRoot)
+
+        val sizePredicate = criteriaBuilder.`in`(
+            sizePath,
+            subquery.select(subSizePath)
+                .where(
+                    extensions?.let {
+                        criteriaBuilder.`in`(subExtensionPath, *extensions)
+                    }
+                )
+                .groupBy(subSizePath)
+                .having(criteriaBuilder.greaterThan(countExpr, 1))
+        )
 
         query.select(criteriaBuilder.tuple(fileIdPath, sizePath, updateTimePath, sha256Path))
             .where(
-                criteriaBuilder.`in`(
-                    sizePath,
-                    subquery.select(subSizePath)
-                        .groupBy(subSizePath)
-                        .having(criteriaBuilder.greaterThan(countExpr, 1))
-                )
+                extensions?.let {
+                    criteriaBuilder.and(
+                        sizePredicate,
+                        criteriaBuilder.`in`(extensionPath, *extensions)
+                    )
+                } ?: sizePredicate
             )
 
         val results = sessionFactory.currentSession.createQuery(query).resultList
